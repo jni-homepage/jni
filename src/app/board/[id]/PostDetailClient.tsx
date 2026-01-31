@@ -127,12 +127,22 @@ export default function PostDetailClient({ postId }: { postId: string }) {
         <div className="jni-post-layout">
           {/* 메인 컨텐츠 */}
           <div className="jni-post-main">
+            {/* 메인 메뉴 빠른 이동 */}
+            <nav className="jni-post-quick-nav">
+              <Link href="/">홈</Link>
+              <Link href="/company">회사소개</Link>
+              <Link href="/fund">자금상담</Link>
+              <Link href="/process">진행과정</Link>
+              <Link href="/#board">게시판</Link>
+              <Link href="/#consult-form">상담신청</Link>
+            </nav>
+
             {/* 브레드크럼 */}
             <nav className="jni-post-breadcrumb">
               <Link href="/">홈</Link>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
               <Link href="/#board">게시판</Link>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
               <span className="current">{post.카테고리 || '게시글'}</span>
             </nav>
 
@@ -191,10 +201,10 @@ export default function PostDetailClient({ postId }: { postId: string }) {
                   <br className="hidden md:inline" />
                   지금 바로 상담 신청하세요.
                 </p>
-                <Link href="/#consult-form" className="jni-post-cta-btn">
+                <a href="/#consult-form" className="jni-post-cta-btn">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                   무료 상담 신청
-                </Link>
+                </a>
               </div>
             </div>
 
@@ -302,7 +312,13 @@ export default function PostDetailClient({ postId }: { postId: string }) {
         .jni-post-section {
           background: linear-gradient(180deg, #0a1420 0%, #0f172e 50%, #0a1420 100%);
           min-height: calc(100vh - 200px);
-          padding: 40px 0 80px;
+          padding: 110px 0 80px;
+        }
+        @media (min-width: 768px) {
+          .jni-post-section { padding-top: 120px; }
+        }
+        @media (min-width: 1024px) {
+          .jni-post-section { padding-top: 130px; }
         }
 
         /* 2컬럼 레이아웃 */
@@ -321,6 +337,36 @@ export default function PostDetailClient({ postId }: { postId: string }) {
         }
 
         .jni-post-main { min-width: 0; }
+
+        /* 빠른 메뉴 네비게이션 */
+        .jni-post-quick-nav {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          margin-bottom: 16px;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+        }
+        .jni-post-quick-nav::-webkit-scrollbar { display: none; }
+        .jni-post-quick-nav a {
+          display: inline-block;
+          padding: 6px 14px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 600;
+          color: rgba(232, 212, 168, 0.6);
+          background: rgba(212, 175, 55, 0.06);
+          border: 1px solid rgba(212, 175, 55, 0.15);
+          text-decoration: none;
+          white-space: nowrap;
+          transition: all 0.3s;
+        }
+        .jni-post-quick-nav a:hover {
+          color: #d4af37;
+          background: rgba(212, 175, 55, 0.12);
+          border-color: rgba(212, 175, 55, 0.4);
+        }
 
         /* 브레드크럼 */
         .jni-post-breadcrumb {
@@ -436,9 +482,12 @@ export default function PostDetailClient({ postId }: { postId: string }) {
         .jni-post-body {
           font-size: 16px;
           line-height: 1.9;
-          color: #ffffff;
+          color: #ffffff !important;
         }
-        .jni-post-body p { margin-bottom: 16px; }
+        .jni-post-body p { margin-bottom: 16px; color: #ffffff !important; }
+        .jni-post-body span { color: #ffffff !important; }
+        .jni-post-body div { color: #ffffff !important; }
+        .jni-post-body li { color: #ffffff !important; }
 
         .jni-post-body h1, .jni-post-body h2, .jni-post-body h3 {
           color: #faf8f3;
@@ -571,21 +620,27 @@ export default function PostDetailClient({ postId }: { postId: string }) {
         .jni-post-cta-btn {
           display: inline-flex;
           align-items: center;
-          gap: 8px;
-          padding: 14px 36px;
-          background: rgba(212, 175, 55, 0.08);
-          border: 2px solid rgba(212, 175, 55, 0.3);
+          justify-content: center;
+          gap: 10px;
+          padding: 16px 40px;
+          background: linear-gradient(135deg, #8b6f3f, #d4af37);
+          border: none;
           border-radius: 30px;
-          color: #d4af37;
+          color: #0f172e;
           font-size: 16px;
           font-weight: 700;
           text-decoration: none;
           transition: all 0.3s;
+          box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
         }
         .jni-post-cta-btn:hover {
-          background: rgba(212, 175, 55, 0.15);
-          border-color: rgba(212, 175, 55, 0.6);
+          background: linear-gradient(135deg, #d4af37, #e8c689);
           transform: translateY(-2px);
+          box-shadow: 0 8px 30px rgba(212, 175, 55, 0.4);
+        }
+        .jni-post-cta-btn svg {
+          stroke: #0f172e;
+          flex-shrink: 0;
         }
 
         /* 관련 게시글 */

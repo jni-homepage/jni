@@ -79,12 +79,12 @@ export default function BoardSection() {
         </div>
 
         {/* 카테고리 탭 */}
-        <div className="flex justify-center gap-2 md:gap-3 mb-8 md:mb-10 flex-wrap">
+        <div className="flex justify-center gap-1.5 md:gap-3 mb-8 md:mb-10">
           {categories.map(cat => (
             <button
               key={cat}
               onClick={() => setActiveTab(cat)}
-              className={`px-5 md:px-6 py-2.5 rounded-full text-[13px] md:text-sm font-semibold transition-all duration-300 border-2
+              className={`px-3 md:px-6 py-1.5 md:py-2.5 rounded-full text-[11px] md:text-sm font-semibold transition-all duration-300 border md:border-2 whitespace-nowrap
                 ${activeTab === cat
                   ? 'gold-gradient-bg border-transparent text-[#0f172e]'
                   : 'bg-transparent border-gold/30 text-body/70 hover:border-gold/60 hover:text-gold'
