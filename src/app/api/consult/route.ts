@@ -75,10 +75,12 @@ export async function POST(request: NextRequest) {
     // 1. Airtable 저장 (필수 - await)
     await saveToAirtable(data)
 
-    // 2. Worker 알림 발송 (비동기 - 실패해도 접수 성공)
-    triggerNotifyWorker(data).catch((err) => {
+    // 2. Worker 알림 발송 (await 필수 - Vercel serverless는 응답 후 즉시 종료되어 fire-and-forget 불가)
+    try {
+      await triggerNotifyWorker(data)
+    } catch (err) {
       console.error('[JNI] Notify worker failed:', err)
-    })
+    }
 
     return NextResponse.json({ success: true })
   } catch (error) {

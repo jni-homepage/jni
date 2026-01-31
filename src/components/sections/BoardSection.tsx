@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 
 interface BoardPost {
   id: string
@@ -62,6 +63,7 @@ export default function BoardSection() {
 
   return (
     <section
+      id="board"
       className="relative w-full py-12 md:py-20 px-5 md:px-8 overflow-hidden"
       style={{ background: 'linear-gradient(180deg, #0a1420 0%, #0f172e 50%, #0a1420 100%)' }}
     >
@@ -114,11 +116,12 @@ export default function BoardSection() {
         {!loading && filtered.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
             {filtered.slice(0, 9).map(post => (
-              <article
+              <Link
                 key={post.id}
+                href={`/board/${post.id}`}
                 className="group bg-[rgba(20,35,65,0.6)] backdrop-blur-[10px] border border-[rgba(212,175,55,0.12)]
                   rounded-2xl overflow-hidden cursor-pointer
-                  transition-all duration-300
+                  transition-all duration-300 block
                   hover:-translate-y-1.5 hover:border-gold/40
                   hover:shadow-[0_10px_40px_rgba(212,175,55,0.15)]"
               >
@@ -158,7 +161,7 @@ export default function BoardSection() {
                     )}
                   </div>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
         )}
