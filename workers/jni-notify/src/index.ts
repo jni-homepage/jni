@@ -133,6 +133,7 @@ function buildCustomerEmailHtml(data: ConsultData, now: string): string {
   return `
 <div style="font-family:'Pretendard',-apple-system,system-ui,sans-serif;max-width:600px;margin:0 auto;background:#fff;">
   <div style="background:linear-gradient(135deg,#0f172e 0%,#1a2547 50%,#0f172e 100%);padding:40px 30px;border-radius:16px 16px 0 0;text-align:center;">
+    <img src="https://jnipartners.co.kr/images/logo.png" alt="제이앤아이 파트너스" width="56" height="56" style="display:block;margin:0 auto 14px;border-radius:12px;" />
     <h1 style="color:#d4af37;margin:0;font-size:24px;font-weight:800;">제이앤아이 파트너스</h1>
     <p style="color:rgba(255,255,255,0.8);margin:12px 0 0;font-size:14px;">상담 접수가 완료되었습니다</p>
   </div>
@@ -262,7 +263,7 @@ export default {
       // 1. 텔레그램 알림 (사내)
       sendTelegram(env, data, now),
       // 2. 사내 알림 이메일
-      sendGmail(env, env.GMAIL_USER, `[상담신청] ${data.company} - ${data.name} 대표`, buildStaffEmailHtml(data, now)),
+      sendGmail(env, `${env.GMAIL_USER}, mkt@polarad.co.kr`, `[상담신청] ${data.company} - ${data.name} 대표`, buildStaffEmailHtml(data, now)),
       // 3. 고객 확인 이메일
       sendGmail(env, data.email, `[제이앤아이 파트너스] 상담 접수가 완료되었습니다`, buildCustomerEmailHtml(data, now)),
     ])
