@@ -1,11 +1,25 @@
+import type { Metadata } from 'next'
 import HeroSection from '@/components/sections/HeroSection'
 import ProcessSection from '@/components/sections/ProcessSection'
 import ServiceSection from '@/components/sections/ServiceSection'
 import ConsultForm from '@/components/ConsultForm'
+import JsonLd from '@/components/JsonLd'
+import { pageMetadata } from '@/lib/seo/metadata'
+import { webSiteSchema, breadcrumbSchema } from '@/lib/seo/schemas'
+
+export const metadata: Metadata = pageMetadata.home
 
 export default function HomePage() {
   return (
     <>
+      <JsonLd
+        data={[
+          webSiteSchema(),
+          breadcrumbSchema([
+            { name: '홈', url: 'https://jnipartners.co.kr' },
+          ]),
+        ]}
+      />
       <HeroSection />
       <ProcessSection />
       <ServiceSection />

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import YouTubeBackground from '@/components/YouTubeBackground'
+import CountUpNumber from '@/components/CountUpNumber'
 import { HERO_VIDEOS } from '@/config/hero-videos'
 
 export default function HeroSection() {
@@ -50,17 +51,17 @@ export default function HeroSection() {
         {/* 감정 메시지 */}
         <div className="text-center animate-fade-up glass rounded-3xl p-8 md:p-12 w-full shadow-[0_0_30px_rgba(30,60,120,0.4),0_8px_32px_rgba(212,175,55,0.2)]">
           <p className="text-xs md:text-base font-bold tracking-wider text-gold uppercase mb-2 text-gold-glow">
-            정부정책 및 성장 전문가
+            정부 정책자금 전문 컨설턴트
           </p>
           <h1 className="text-[19px] md:text-[40px] font-extrabold leading-[1.4] md:leading-[1.3] text-light mb-2.5 md:mb-4 break-keep">
-            체계적인 <span className="highlight-text font-black">경영 자문</span>
+            정책자금 <span className="highlight-text font-black">경영컨설팅</span>
             <br className="hidden md:block" />
-            {' '}어디서부터 시작해야 하나요?
+            {' '}자금조달 어디서부터 시작하나요?
           </h1>
           <p className="text-[15px] md:text-[19px] text-body/85 leading-[1.7] break-keep">
-            <span className="text-gold font-black text-gold-glow whitespace-nowrap">제이앤아이 파트너스</span>의 성장 전문가와
-            <br className="md:hidden" /> 대표님의 성장 과정을 함께합니다
-            <br className="md:hidden" /> 올바른 전략 수립이 성공의 첫걸음입니다
+            <span className="text-gold font-black text-gold-glow whitespace-nowrap">제이앤아이 파트너스</span>의 자금조달 전문가가
+            <br className="md:hidden" /> 대표님의 기업 성장을 지원합니다
+            <br className="md:hidden" /> 체계적인 정책자금 전략이 성공적 자금확보의 시작입니다
           </p>
           <small className="block mt-2.5 text-[13px] text-body/75">
             ※ 제이앤아이 파트너스는 기업평가 및 정부정책 서류작성 대행을 하지 않습니다.
@@ -130,12 +131,12 @@ export default function HeroSection() {
               </div>
               <div className="relative z-[2] md:text-left text-center w-full">
                 <h4 className="text-base md:text-2xl font-extrabold text-light mb-1 break-keep">
-                  검증된 성공률 96% 기록
+                  심사통과율 <CountUpNumber end={96} suffix="%" /> 검증된 실적
                 </h4>
                 <p className="text-[13px] md:text-lg text-body/80 leading-relaxed break-keep">
                   <span className="hidden md:inline">
-                    자체 진행 시 <span className="text-red-500">▼</span>낮은 성공률<br />
-                    전문 성장 전략 <span className="text-emerald-500">▲</span>높은 성공률 <span className="text-emerald-500">▲</span>우수한 성과
+                    자체 진행 시 <span className="text-red-500">▼</span>낮은 심사통과율<br />
+                    전문 자금조달 전략 <span className="text-emerald-500">▲</span>높은 성공률 <span className="text-emerald-500">▲</span>우수한 성과
                   </span>
                   {/* 모바일 테이블 */}
                   <span className="md:hidden block mt-2">
@@ -176,11 +177,11 @@ export default function HeroSection() {
               </div>
               <div className="relative z-[2] md:text-left text-center w-full">
                 <h4 className="text-base md:text-2xl font-extrabold text-light mb-1 break-keep">
-                  체계적 성장 전략 시스템
+                  정책자금 맞춤형 자금조달 시스템
                 </h4>
                 <p className="text-[13px] md:text-lg text-body/80 leading-relaxed break-keep">
-                  성장 전문가 팀이<br />
-                  대표자 분석부터 전략 실행까지 함께합니다
+                  정책자금 전문가 팀이<br />
+                  기업분석부터 자금조달 전략 실행까지 함께합니다
                 </p>
               </div>
             </div>

@@ -68,7 +68,6 @@ export default function ConsultForm() {
         company: formData.get('company') as string,
         bizno: formData.get('bizno') as string,
         name: formData.get('name') as string,
-        position: formData.get('position') as string,
         phone: formData.get('phone') as string,
         email: formData.get('email') as string,
         industry: formData.get('industry') as string,
@@ -162,20 +161,19 @@ export default function ConsultForm() {
                 <FormField label="기업명" name="company" required />
                 <FormField label="사업자번호" name="bizno" placeholder="000-00-00000" required onFormat={formatBizNo} />
                 <FormField label="대표자명" name="name" required />
-                <FormField label="직위" name="position" placeholder="대표이사" />
+                <FormField label="연락처" name="phone" type="tel" placeholder="010-0000-0000" required onFormat={formatPhone} />
               </div>
 
               {/* 연락 정보 - 4열 */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 md:gap-5 mb-3 md:mb-4">
-                <FormField label="연락처" name="phone" type="tel" placeholder="010-0000-0000" required onFormat={formatPhone} />
                 <FormField label="이메일" name="email" type="email" required />
                 <SelectField label="업종" name="industry" options={INDUSTRIES} />
                 <FormField label="설립연도" name="founded" placeholder="2020" />
+                <SelectField label="통화 가능 시간" name="consultTime" options={CONSULT_TIMES} required />
               </div>
 
-              {/* 통화시간 + 자금규모 */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 md:gap-5 mb-3 md:mb-4">
-                <SelectField label="통화 가능 시간" name="consultTime" options={CONSULT_TIMES} required />
+              {/* 필요 자금 규모 - 1열 */}
+              <div className="grid grid-cols-1 gap-2.5 md:gap-5 mb-3 md:mb-4">
                 <SelectField label="필요 자금 규모" name="amount" options={AMOUNTS} />
               </div>
 

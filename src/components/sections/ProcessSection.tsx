@@ -1,12 +1,13 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import CountUpNumber from '@/components/CountUpNumber'
 
 const STEPS = [
   {
     num: '01',
     title: '역량 분석',
-    desc: '대표자 역량과 성장 방향\n체계적 분석 및 설계',
+    desc: '대표자 역량과 자금조달 방향\n체계적 분석 및 전략 설계',
     icon: (
       <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z" />
     ),
@@ -14,7 +15,7 @@ const STEPS = [
   {
     num: '02',
     title: '조달 전략',
-    desc: '최적의 자금 유형과\n신청 전략 수립',
+    desc: '정책자금·기업대출·보증서 등\n최적 자금조달 전략 수립',
     icon: (
       <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
     ),
@@ -22,7 +23,7 @@ const STEPS = [
   {
     num: '03',
     title: '성공 지원',
-    desc: '신청부터 심사통과까지\n전문가 전담 관리',
+    desc: '정책자금 신청부터 심사통과까지\n전문 컨설턴트 전담 지원',
     icon: <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />,
   },
 ]
@@ -68,11 +69,11 @@ export default function ProcessSection() {
         {/* 섹션 헤더 */}
         <div className="text-center mb-7 md:mb-14 animate-fade-up">
           <h2 className="text-[26px] md:text-[44px] font-black text-light mb-2.5 uppercase tracking-wider leading-snug">
-            성장 자금 조달의<br />
+            정책자금 자금조달의<br />
             <span className="text-gold animate-[neonGlowPulse_3s_ease-in-out_infinite]">체계적 3단계 프로세스</span>
           </h2>
           <p className="text-sm md:text-xl text-body/90 font-medium tracking-wide leading-relaxed">
-            자금조달부터 성장 전략까지 전문가와 함께 하는 여정
+            정책자금 조달부터 기업 성장 전략까지 경영컨설팅 전문가와 함께
           </p>
         </div>
 
@@ -163,11 +164,11 @@ export default function ProcessSection() {
 
           <div className="flex flex-col gap-1">
             <h3 className="text-[15px] md:text-xl lg:text-[22px] font-extrabold text-light tracking-wide">
-              성공적인 자금 조달 현실로!
+              성공적인 정책자금 확보를 현실로!
             </h3>
             <p className="text-sm md:text-lg lg:text-xl text-body/90 font-semibold">
-              성장 지원 기업 <span className="text-gold font-black text-gold-glow">418+</span> / 심사 통과율{' '}
-              <span className="text-gold font-black text-gold-glow">96%</span>
+              자금조달 성공 기업 <span className="text-gold font-black text-gold-glow"><CountUpNumber end={418} suffix="+" /></span> / 심사통과율{' '}
+              <span className="text-gold font-black text-gold-glow"><CountUpNumber end={96} suffix="%" /></span>
             </p>
             <p className="text-[11px] md:text-xs lg:text-[13px] text-body/70 mt-1">
               *기업 규모와 업종에 따라 결과 및 기간은 차이가 있을 수 있습니다.

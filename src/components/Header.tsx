@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -59,8 +60,15 @@ export default function Header() {
         }`}
       >
         <header className="max-w-wide mx-auto px-5 md:px-10 flex justify-between items-center h-[70px] md:h-[80px] lg:h-[90px]">
-          <Link href="/" className="flex items-center gap-4 z-[10001]">
-            {/* 로고 이미지 - 추후 R2에서 서빙 */}
+          <Link href="/" className="flex items-center gap-2 md:gap-3 z-[10001]">
+            <Image
+              src="/images/logo.png"
+              alt="제이앤아이 파트너스 로고"
+              width={36}
+              height={36}
+              className="w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10"
+              priority
+            />
             <span className="text-lg md:text-[22px] lg:text-[24px] font-bold tracking-tight gold-gradient-text whitespace-nowrap">
               제이앤아이 파트너스
             </span>
