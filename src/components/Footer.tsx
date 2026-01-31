@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import LegalModal from './LegalModal'
 import { TERMS_OF_SERVICE, PRIVACY_POLICY } from '@/config/legal-content'
@@ -23,7 +24,14 @@ export default function Footer() {
         <div className="max-w-content mx-auto px-5 md:px-5">
           {/* 상단: 로고 + 설명 */}
           <div className="py-8 border-b border-gold/20">
-            <div className="flex items-center gap-4 mb-3">
+            <div className="flex items-center gap-2.5 md:gap-3 mb-3">
+              <Image
+                src="/images/logo.png"
+                alt="제이앤아이 파트너스 로고"
+                width={32}
+                height={32}
+                className="w-7 h-7 md:w-8 md:h-8"
+              />
               <span className="text-[22px] md:text-[28px] font-bold gold-gradient-text">
                 제이앤아이 파트너스
               </span>

@@ -31,44 +31,60 @@ export default function CountUpNumber({
     const el = ref.current
     if (!el) return
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated.current) {
-          hasAnimated.current = true
-          let start: number | null = null
+    const runAnimation = () => {
+      if (hasAnimated.current) return
+      hasAnimated.current = true
+      let start: number | null = null
 
-          const animate = (timestamp: number) => {
-            if (!start) start = timestamp
-            const elapsed = timestamp - start
-            const progress = Math.min(elapsed / duration, 1)
-            const easedProgress = easeOutQuart(progress)
-            const current = easedProgress * end
+      const animate = (timestamp: number) => {
+        if (!start) start = timestamp
+        const elapsed = timestamp - start
+        const progress = Math.min(elapsed / duration, 1)
+        const easedProgress = easeOutQuart(progress)
+        const current = easedProgress * end
 
-            const formatted = decimals > 0
-              ? current.toFixed(decimals)
-              : Math.floor(current).toString()
+        const formatted = decimals > 0
+          ? current.toFixed(decimals)
+          : Math.floor(current).toString()
 
-            setDisplay(`${prefix}${formatted}${suffix}`)
+        setDisplay(`${prefix}${formatted}${suffix}`)
 
-            if (progress < 1) {
-              requestAnimationFrame(animate)
-            }
-          }
-
+        if (progress < 1) {
           requestAnimationFrame(animate)
-          observer.unobserve(el)
         }
-      },
-      { threshold: 0.3 }
-    )
+      }
 
-    observer.observe(el)
+      requestAnimationFrame(animate)
+    }
 
-    return () => observer.disconnect()
+    // Delay observer setup to ensure hydration is complete and element is painted
+    const timer = setTimeout(() => {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            runAnimation()
+            observer.unobserve(el)
+          }
+        },
+        { threshold: 0.1 }
+      )
+
+      observer.observe(el)
+
+      // Store for cleanup
+      cleanupRef.current = () => observer.disconnect()
+    }, 300)
+
+    const cleanupRef = { current: () => {} }
+
+    return () => {
+      clearTimeout(timer)
+      cleanupRef.current()
+    }
   }, [end, suffix, prefix, duration, decimals])
 
   return (
-    <span ref={ref} className={className}>
+    <span ref={ref} className={className} style={{ display: 'inline-block' }}>
       {display}
     </span>
   )

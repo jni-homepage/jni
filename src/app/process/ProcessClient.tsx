@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import ConsultForm from '@/components/ConsultForm'
 import YouTubeBackground from '@/components/YouTubeBackground'
+import CountUpNumber from '@/components/CountUpNumber'
 import { HERO_VIDEOS } from '@/config/hero-videos'
 
 /* ──────────────────────────────────────────────
@@ -23,27 +24,23 @@ function ProcessHero() {
             정책자금 경영컨설팅으로
             <br /> 만드는 확실한 자금조달
           </h2>
-          <p
-            className="text-[15px] md:text-[20px] lg:text-[22px] text-body leading-[1.6] md:leading-[1.6] break-keep px-2.5 md:px-0"
-            style={{
-              textShadow: '2px 2px 6px rgba(0,0,0,0.7), 0 0 10px rgba(212,175,55,0.2)',
-            }}
-          >
-            <span
-              className="text-gold font-bold"
+          <div className="block mx-auto w-fit bg-[rgba(212,175,55,0.12)] backdrop-blur-[10px] border border-[rgba(212,175,55,0.3)] rounded-2xl px-5 md:px-10 py-5 md:py-7 shadow-[0_0_40px_rgba(212,175,55,0.08)]">
+            <p
+              className="text-[15px] md:text-[20px] lg:text-[22px] text-white/90 leading-[1.6] md:leading-[1.6] break-keep"
               style={{
-                textShadow:
-                  '0 0 20px rgba(212,175,55,0.8), 0 0 40px rgba(212,175,55,0.5), 0 4px 8px rgba(139,111,63,0.4)',
+                textShadow: '2px 2px 6px rgba(0,0,0,0.7), 0 0 10px rgba(212,175,55,0.2)',
               }}
             >
-              성장 전문가
-            </span>
-            와 함께
-            <br />
-            정책자금 자금조달 전략으로 심사통과율 96% 달성
-          </p>
+              <span className="text-white font-bold">
+                성장 전문가
+              </span>
+              와 함께
+              <br />
+              정책자금 자금조달 전략으로 심사통과율 96% 달성
+            </p>
+          </div>
           <p
-            className="text-[13px] text-body/70 mt-5 leading-[1.6]"
+            className="text-[9px] md:text-[13px] text-body/70 mt-5 leading-[1.6]"
             style={{ textShadow: '2px 2px 6px rgba(0,0,0,0.7)' }}
           >
             ※ 제이앤아이 파트너스는 정책자금 서류작성을 대행하지 않습니다.
@@ -322,8 +319,8 @@ function FaqSection() {
           <p className="text-[15px] md:text-lg text-body leading-[1.5] mt-4">
             제이앤아이 파트너스의 정책자금 성장 지원 서비스에 관한 모든 궁금증을 풀어드립니다
           </p>
-          <p className="text-[13px] text-body/60 mt-4 leading-[1.6]">
-            ※ 제이앤아이 파트너스는 정책자금 서류작성을 대행하지 않습니다. ※ 기업평가를 하지 않습니다.
+          <p className="text-[9px] md:text-[13px] text-body/60 mt-4 leading-[1.6]">
+            ※ 제이앤아이 파트너스는 정책자금 서류작성을 대행하지 않습니다.<br className="md:hidden" /> ※ 기업평가를 하지 않습니다.
           </p>
         </div>
 
@@ -433,8 +430,8 @@ function CtaSection() {
             <br /> 기업 성장을 앞당기세요
           </h2>
           <p className="text-[15px] md:text-xl text-body leading-[1.5] mb-6 md:mb-[30px] break-keep" style={{ textShadow: '0 0 10px rgba(0,0,0,0.3)' }}>
-            검증된 경영컨설팅 노하우와 맞춤형 자금조달 솔루션,
-            <br className="md:hidden" /> 제이앤아이 파트너스가 함께합니다
+            검증된 경영컨설팅 노하우와<br className="md:hidden" /> 맞춤형 자금조달 솔루션
+            <br /> 제이앤아이 파트너스가 함께합니다
           </p>
 
           {/* 버튼 */}
@@ -467,7 +464,7 @@ function CtaSection() {
             hover:shadow-[0_0_40px_rgba(212,175,55,0.4),0_8px_25px_rgba(212,175,55,0.3)]">
             <span>정책자금 심사통과 성공률</span>
             <span className="text-[18px] md:text-2xl mx-1 text-gold [text-shadow:0_0_15px_rgba(212,175,55,0.8)]">
-              96%
+              <CountUpNumber end={96} suffix="%" />
             </span>
           </div>
         </div>

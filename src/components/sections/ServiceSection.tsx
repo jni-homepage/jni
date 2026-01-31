@@ -9,7 +9,9 @@ const TABS = [
     label: '역량 분석',
     title: '역량 분석',
     icon: <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />,
-    point: '정책자금 심사통과율 96% 달성',
+    pointPrefix: '정책자금 심사통과율 ',
+    pointNumber: 96,
+    pointSuffix: '% 달성',
     desc1: '418건 이상의 자금조달 성공 사례를 기반으로 대표자별 정책자금 적합도를 분석합니다.',
     desc2: '대표자 역량, 업종, 자금조달 목표를 정밀 분석하여 최적의 정부지원 정책자금을 추천합니다.\n\n정부 지원사업 공고와 정책자금 정보를 신속하게 반영하여 항상 최신 데이터에 기반한 분석을 제공합니다.',
   },
@@ -18,7 +20,10 @@ const TABS = [
     label: '맞춤 전략',
     title: '맞춤 전략',
     icon: <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z" />,
-    point: '평균 자금조달액 2.8억원 달성',
+    pointPrefix: '평균 자금조달액 ',
+    pointNumber: 2.8,
+    pointSuffix: '억원 달성',
+    pointDecimals: 1,
     desc1: '대표자 상황별 최적의 정책자금 전략을 수립하고 자금조달 계획을 설계합니다.',
     desc2: '기업의 자금 필요 시기와 규모를 정밀 분석하여 정책자금·기업대출·보증서 최적 조합 전략을 수립합니다.\n\n정부지원 정보 제공부터 정책자금 활용까지 성공적 자금조달을 위한 체계적 로드맵을 제시합니다.',
   },
@@ -27,7 +32,9 @@ const TABS = [
     label: '심사 준비',
     title: '심사 준비',
     icon: <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z" />,
-    point: '정책자금 재도전 승인률 98%',
+    pointPrefix: '정책자금 재도전 승인률 ',
+    pointNumber: 98,
+    pointSuffix: '%',
     desc1: '정책자금 심사통과를 위한 서류 정보 및 증빙자료 안내를 완벽하게 지원합니다.',
     desc2: '서류 정보 제공, 재무제표 분석, 심사 핵심 포인트 설명 등 정부지원 심사기관의 기준을 정확히 안내합니다.\n\n자금조달 신청 이후에도 지속적 모니터링과 피드백으로 심사통과를 위한 완벽한 준비를 지원합니다.',
   },
@@ -36,7 +43,9 @@ const TABS = [
     label: '전담 관리',
     title: '전담 관리',
     icon: <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />,
-    point: '고객 재의뢰율 98%+ 달성',
+    pointPrefix: '고객 재의뢰율 ',
+    pointNumber: 98,
+    pointSuffix: '%+ 달성',
     desc1: '업종별 경영컨설팅 전문가가 정책자금 신청부터 정산까지 전체 과정을 관리합니다.',
     desc2: '기업분석부터 정책자금 신청, 심사통과, 정산까지 모든 단계를 전문가가 직접 지원합니다.\n\n대표님은 본업에만 집중하시고 복잡한 정책자금 자금조달 절차는 제이앤아이 파트너스가 완벽하게 안내합니다.',
   },
@@ -66,7 +75,7 @@ export default function ServiceSection() {
           <p className="text-sm md:text-xl lg:text-[22px] text-body/90 font-medium tracking-wide">
             기업 분석과 맞춤 경영컨설팅으로 정책자금 심사통과를 이루다
           </p>
-          <p className="text-xs text-body/70 mt-3 leading-relaxed">
+          <p className="text-[9px] md:text-xs text-body/70 mt-3 leading-relaxed">
             ※ 제이앤아이 파트너스는 정책자금 서류작성을 대행하지 않습니다.<br />
             ※ 기업평가를 하지 않습니다.
           </p>
@@ -113,7 +122,7 @@ export default function ServiceSection() {
             {/* 모바일 포인트 박스 */}
             <div className="md:hidden my-4 bg-gradient-to-br from-[rgba(30,60,120,0.3)] to-gold/20 border-l-[3px] border-l-gold rounded-lg p-3">
               <p className="text-[13px] text-light font-semibold">
-                <span className="text-gold font-bold text-gold-glow">{current.point}</span>
+                <span className="text-gold font-bold text-gold-glow">{current.pointPrefix}<CountUpNumber end={current.pointNumber} decimals={current.pointDecimals || 0} />{current.pointSuffix}</span>
               </p>
             </div>
 
@@ -124,7 +133,7 @@ export default function ServiceSection() {
         </div>
 
         {/* 신뢰 배너 */}
-        <div className="gold-gradient-bg rounded-xl md:rounded-[15px] p-4 md:py-5 md:px-8 mt-6 md:mt-10 relative overflow-hidden
+        <div className="gold-gradient-bg rounded-xl md:rounded-[15px] p-4 md:py-5 md:px-8 mt-6 md:mt-10 relative overflow-hidden max-w-[1130px] mx-auto
           shadow-[0_0_45px_rgba(255,255,255,0.2),0_0_55px_rgba(212,175,55,0.4),0_4px_20px_rgba(30,60,120,0.3)]">
           <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
           <div className="relative z-[1] flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-8">

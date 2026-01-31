@@ -53,10 +53,14 @@ export default function Header() {
     <>
       {/* 헤더 바 */}
       <div
-        className={`fixed top-0 left-0 w-full z-[9999] transition-all duration-300 ${
-          isScrolled
-            ? 'bg-navy/[0.98] backdrop-blur-[20px] border-b border-gold/50 shadow-[0_0_30px_rgba(212,175,55,0.2)]'
-            : 'bg-navy/95 border-b border-gold/30 shadow-[0_2px_10px_rgba(0,0,0,0.3)]'
+        className={`fixed top-0 left-0 w-full transition-all duration-300 ${
+          isMenuOpen
+            ? 'z-[10001] bg-transparent border-b border-transparent shadow-none'
+            : `z-[9999] ${
+                isScrolled
+                  ? 'bg-navy/[0.98] backdrop-blur-[20px] border-b border-gold/50 shadow-[0_0_30px_rgba(212,175,55,0.2)]'
+                  : 'bg-navy/95 border-b border-gold/30 shadow-[0_2px_10px_rgba(0,0,0,0.3)]'
+              }`
         }`}
       >
         <header className="max-w-wide mx-auto px-5 md:px-10 flex justify-between items-center h-[70px] md:h-[80px] lg:h-[90px]">
@@ -76,28 +80,28 @@ export default function Header() {
 
           {/* 햄버거 버튼 */}
           <button
-            className="flex flex-col justify-center items-center gap-[5px] w-11 h-11 bg-transparent border-none cursor-pointer z-[10001]"
+            className="relative w-11 h-11 bg-transparent border-none cursor-pointer z-[10001]"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? '메뉴 닫기' : '메뉴 열기'}
             aria-expanded={isMenuOpen}
           >
             <span
-              className={`block w-6 h-0.5 rounded-sm transition-all duration-400 ${
+              className={`absolute left-[10px] w-6 h-0.5 rounded-sm transition-all duration-300 ease-in-out ${
                 isMenuOpen
-                  ? 'bg-gold rotate-45 translate-y-[7px]'
-                  : 'bg-white'
+                  ? 'bg-gold rotate-45 top-[21px]'
+                  : 'bg-white top-[14px]'
               }`}
             />
             <span
-              className={`block w-6 h-0.5 rounded-sm transition-all duration-400 ${
-                isMenuOpen ? 'opacity-0 -translate-x-5' : 'bg-white'
+              className={`absolute left-[10px] top-[21px] w-6 h-0.5 rounded-sm transition-all duration-300 ease-in-out ${
+                isMenuOpen ? 'opacity-0 scale-x-0' : 'bg-white opacity-100'
               }`}
             />
             <span
-              className={`block w-6 h-0.5 rounded-sm transition-all duration-400 ${
+              className={`absolute left-[10px] w-6 h-0.5 rounded-sm transition-all duration-300 ease-in-out ${
                 isMenuOpen
-                  ? 'bg-gold -rotate-45 -translate-y-[7px]'
-                  : 'bg-white'
+                  ? 'bg-gold -rotate-45 top-[21px]'
+                  : 'bg-white top-[28px]'
               }`}
             />
           </button>
@@ -107,7 +111,7 @@ export default function Header() {
       {/* 풀스크린 메뉴 */}
       <div
         className={`fixed inset-0 z-[10000] flex items-center justify-center transition-transform duration-700 ${
-          isMenuOpen ? 'translate-y-0' : '-translate-y-full'
+          isMenuOpen ? 'translate-y-0 pointer-events-auto' : '-translate-y-full pointer-events-none'
         }`}
         style={{
           background: 'linear-gradient(135deg, #0f172e 0%, #1a2547 50%, #0f172e 100%)',
@@ -143,26 +147,6 @@ export default function Header() {
                 </Link>
               </li>
             ))}
-            {/* 상담신청 CTA */}
-            <li className="overflow-hidden mt-5">
-              <Link
-                href="#consult-form"
-                className={`inline-block text-xl md:text-2xl font-bold text-light no-underline
-                  px-8 md:px-10 py-3.5 md:py-4 rounded-full
-                  gold-gradient-bg gold-glow
-                  transition-all duration-300
-                  hover:scale-105 hover:shadow-[0_0_50px_rgba(212,175,55,0.8)]
-                  ${isMenuOpen ? 'translate-y-0' : 'translate-y-full'}
-                `}
-                style={{
-                  transitionTimingFunction: 'cubic-bezier(0.76, 0, 0.24, 1)',
-                  transitionDelay: isMenuOpen ? '0.4s' : '0s',
-                }}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                상담신청
-              </Link>
-            </li>
           </ul>
         </nav>
       </div>

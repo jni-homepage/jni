@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import ConsultForm from '@/components/ConsultForm'
 import YouTubeBackground from '@/components/YouTubeBackground'
+import CountUpNumber from '@/components/CountUpNumber'
 import { HERO_VIDEOS } from '@/config/hero-videos'
 
 /* ──────────────────────────────────────────────
@@ -14,19 +15,21 @@ function CompanyHero() {
       <YouTubeBackground videoId={HERO_VIDEOS.about} />
       {/* 타이틀 */}
       <div className="relative z-[2] max-w-[1200px] mx-auto text-center animate-fade-up">
-        <span className="inline-block px-[30px] py-[10px] bg-[rgba(212,175,55,0.2)] border border-[rgba(212,175,55,0.4)] rounded-[50px] text-gold text-[12px] md:text-sm font-bold tracking-[2px] uppercase backdrop-blur-[10px] mb-[30px]">
+        <span className="block mx-auto w-fit px-[30px] py-[10px] bg-[rgba(212,175,55,0.2)] border border-[rgba(212,175,55,0.4)] rounded-[50px] text-gold text-[12px] md:text-sm font-bold tracking-[2px] uppercase backdrop-blur-[10px] mb-[30px]">
           About Us
         </span>
-        <h1 className="text-[28px] md:text-[clamp(32px,5vw,56px)] font-black text-[#e0f2f1] mb-[30px] leading-[1.2] tracking-[-1px]">
-          <span className="text-white font-black inline-block [text-shadow:0_2px_8px_rgba(255,255,255,0.3)]">
-            제이앤아이 파트너스
-          </span>
-        </h1>
-        <p className="text-[clamp(16px,2.5vw,24px)] text-[rgba(224,242,241,0.9)] leading-[1.6] max-w-[800px] mx-auto font-normal">
-          정책자금 경영컨설팅 전문 파트너<br />
-          성공적인 자금조달을 위한 완벽한 준비, 심사통과율 96%
-        </p>
-        <p className="text-xs text-[rgba(224,242,241,0.7)] mt-5 leading-[1.5]">
+        <div className="block mx-auto w-fit bg-[rgba(212,175,55,0.12)] backdrop-blur-[10px] border border-[rgba(212,175,55,0.3)] rounded-2xl px-6 md:px-10 py-6 md:py-8 shadow-[0_0_40px_rgba(212,175,55,0.08)]">
+          <h1 className="text-[28px] md:text-[clamp(32px,5vw,56px)] font-black text-[#e0f2f1] mb-[20px] leading-[1.2] tracking-[-1px]">
+            <span className="text-white font-black inline-block [text-shadow:0_2px_12px_rgba(0,0,0,0.8),0_0_30px_rgba(0,0,0,0.5)]">
+              제이앤아이 파트너스
+            </span>
+          </h1>
+          <p className="text-[14px] md:text-[clamp(16px,2.5vw,24px)] text-[rgba(224,242,241,0.95)] leading-[1.6] max-w-[800px] mx-auto font-normal [text-shadow:0_1px_8px_rgba(0,0,0,0.6)]">
+            정책자금 경영컨설팅 전문 파트너<br />
+            성공적인 자금조달을 위한 완벽한 준비,<br className="md:hidden" /> 심사통과율 <CountUpNumber end={96} suffix="%" />
+          </p>
+        </div>
+        <p className="text-[9px] md:text-xs text-[rgba(224,242,241,0.7)] mt-5 leading-[2] whitespace-nowrap">
           ※ 제이앤아이 파트너스는 정책자금 서류작성을 대행하지 않습니다.<br />
           ※ 기업평가를 하지 않습니다.
         </p>
@@ -163,7 +166,7 @@ function SystemSection() {
             <br className="hidden md:block" />{' '}
             완벽하게 준비합니다.
           </p>
-          <p className="text-xs text-[rgba(224,242,241,0.6)] mt-6 leading-[1.6] text-center">
+          <p className="text-[9px] md:text-xs text-[rgba(224,242,241,0.6)] mt-6 leading-[1.6] text-center">
             ※ 제이앤아이 파트너스는 정책자금 서류작성을 대행하지 않습니다.<br />
             ※ 기업평가를 하지 않습니다.
           </p>
@@ -317,7 +320,7 @@ function CategorySection() {
           <p className="text-lg text-[rgba(224,242,241,0.8)] [text-shadow:0_0_10px_rgba(0,0,0,0.3)]">
             제이앤아이 파트너스가 제공하는 정책자금 경영컨설팅 솔루션
           </p>
-          <p className="text-xs text-[rgba(224,242,241,0.6)] mt-6 leading-[1.6]">
+          <p className="text-[9px] md:text-xs text-[rgba(224,242,241,0.6)] mt-6 leading-[1.6]">
             ※ 제이앤아이 파트너스는 정책자금 서류작성을 대행하지 않습니다.<br />
             ※ 기업평가를 하지 않습니다.
           </p>
@@ -368,11 +371,11 @@ function CategorySection() {
               <p className="text-sm md:text-base text-[rgba(224,242,241,0.85)] leading-[1.6] md:leading-[1.8] mb-4 md:mb-5 relative z-[3]">
                 {cat.desc}
               </p>
-              <div className="flex flex-wrap md:flex-wrap max-md:flex-nowrap gap-1.5 md:gap-2 relative z-[3] max-md:overflow-x-auto max-md:scrollbar-none">
+              <div className="flex flex-wrap gap-1.5 md:gap-2 relative z-[3]">
                 {cat.tags.map((tag, j) => (
                   <span
                     key={j}
-                    className="bg-[rgba(212,175,55,0.15)] text-gold px-2.5 md:px-4 py-1 md:py-1.5 rounded-[20px] text-[10px] md:text-sm font-medium border border-[rgba(212,175,55,0.3)] backdrop-blur-[5px] [text-shadow:0_0_5px_rgba(212,175,55,0.5)] whitespace-nowrap flex-shrink-0"
+                    className="bg-[rgba(212,175,55,0.15)] text-gold px-2 md:px-4 py-0.5 md:py-1.5 rounded-[20px] text-[8px] md:text-sm font-medium border border-[rgba(212,175,55,0.3)] backdrop-blur-[5px] [text-shadow:0_0_5px_rgba(212,175,55,0.5)]"
                   >
                     {tag}
                   </span>
@@ -437,7 +440,7 @@ function CeoSection() {
           <p className="text-lg text-[rgba(224,242,241,0.8)]">
             정책자금 자금조달 경영컨설팅 전문, 제이앤아이 파트너스
           </p>
-          <p className="text-xs text-[rgba(224,242,241,0.6)] mt-6 leading-[1.6]">
+          <p className="text-[9px] md:text-xs text-[rgba(224,242,241,0.6)] mt-6 leading-[1.6]">
             ※ 제이앤아이 파트너스는 정책자금 서류작성을 대행하지 않습니다.<br />
             ※ 기업평가를 하지 않습니다.
           </p>

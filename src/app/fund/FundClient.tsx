@@ -66,8 +66,13 @@ function FundHero() {
       ),
       title: '정책자금',
       desc: '중소기업 창업·성장·시설자금',
-      amount: '최대 30억원',
-      rate: '연 2.5%~',
+      amountPrefix: '최대 ',
+      amountNum: 30,
+      amountSuffix: '억원',
+      ratePrefix: '연 ',
+      rateNum: 2.5,
+      rateSuffix: '%~',
+      rateDecimals: 1,
     },
     {
       icon: (
@@ -77,8 +82,13 @@ function FundHero() {
       ),
       title: '기업대출',
       desc: '운전·시설·신용대출',
-      amount: '최대 50억원',
-      rate: '연 3.2%~',
+      amountPrefix: '최대 ',
+      amountNum: 50,
+      amountSuffix: '억원',
+      ratePrefix: '연 ',
+      rateNum: 3.2,
+      rateSuffix: '%~',
+      rateDecimals: 1,
     },
     {
       icon: (
@@ -88,8 +98,13 @@ function FundHero() {
       ),
       title: '보증서발급',
       desc: '신용·기술보증서',
-      amount: '최대 30억원',
-      rate: '보증료 0.5%~',
+      amountPrefix: '최대 ',
+      amountNum: 30,
+      amountSuffix: '억원',
+      ratePrefix: '보증료 ',
+      rateNum: 0.5,
+      rateSuffix: '%~',
+      rateDecimals: 1,
     },
     {
       icon: (
@@ -99,14 +114,14 @@ function FundHero() {
       ),
       title: '경영컨설팅',
       desc: '기업분석·자금조달전략',
-      amount: '무료 상담',
-      rate: '전문가 매칭',
+      amountStatic: '무료 상담',
+      rateStatic: '전문가 매칭',
     },
   ]
 
   return (
-    <section className="relative w-full pt-[130px] md:pt-[180px] pb-[80px] px-0 overflow-hidden">
-      <YouTubeBackground videoId={HERO_VIDEOS.funding} />
+    <section className="relative w-full pt-[130px] md:pt-[180px] pb-[50px] md:pb-[80px] px-0 overflow-hidden">
+      <YouTubeBackground videoId={HERO_VIDEOS.funding} overlayOpacity={0.88} />
       {/* 플로팅 아이콘 배경 */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <svg className="absolute top-[10%] left-[10%] opacity-[0.03] text-gold animate-[haFloat_20s_ease-in-out_infinite]" width="80" height="80" viewBox="0 0 24 24" fill="currentColor">
@@ -141,9 +156,6 @@ function FundHero() {
             <p className="text-[15px] md:text-[20px] leading-[1.6] mb-6 md:mb-10 text-body [text-shadow:0_0_10px_rgba(0,0,0,0.3)] break-keep">
               중소기업 맞춤형 정책자금 전략 수립부터<br className="md:hidden" /> 성공적인 자금조달까지<br />
               체계적인 경영컨설팅으로<br className="md:hidden" /> 대표님의 기업 성장을 지원합니다
-            </p>
-            <p className="text-xs text-[rgba(232,212,168,0.6)] mt-3 leading-[1.6] [text-shadow:0_0_10px_rgba(0,0,0,0.3)]">
-              ※ 제이앤아이 파트너스는 정책자금 서류작성을 대행하지 않습니다. ※ 기업평가를 하지 않습니다.
             </p>
             <div className="flex gap-2.5 md:gap-4 flex-wrap justify-center md:justify-start mt-6 md:mt-0 mb-3 md:mb-0">
               <a
@@ -212,10 +224,10 @@ function FundHero() {
                     {card.desc}
                   </p>
                   <div className="text-[17px] md:text-2xl font-bold text-gold mb-0.5 md:mb-2 relative z-[2] [text-shadow:0_0_20px_rgba(212,175,55,0.8)]">
-                    {card.amount}
+                    {'amountStatic' in card ? card.amountStatic : <>{card.amountPrefix}<CountUpNumber end={card.amountNum!} />{card.amountSuffix}</>}
                   </div>
                   <div className="text-[13px] md:text-lg font-semibold text-body relative z-[2]">
-                    {card.rate}
+                    {'rateStatic' in card ? card.rateStatic : <>{card.ratePrefix}<CountUpNumber end={card.rateNum!} decimals={card.rateDecimals} />{card.rateSuffix}</>}
                   </div>
                 </div>
               ))}
@@ -223,6 +235,11 @@ function FundHero() {
           </div>
         </div>
       </div>
+
+      {/* 면책문구 - 히어로 하단 */}
+      <p className="text-[9px] md:text-xs text-[rgba(232,212,168,0.6)] mt-8 leading-[1.6] text-center relative z-[1] [text-shadow:0_0_10px_rgba(0,0,0,0.3)]">
+        ※ 제이앤아이 파트너스는 정책자금 서류작성을 대행하지 않습니다.<br className="md:hidden" /> ※ 기업평가를 하지 않습니다.
+      </p>
     </section>
   )
 }
@@ -336,7 +353,9 @@ function ProcessSection() {
   ]
 
   return (
-    <section className="relative w-full bg-navy py-[40px] md:py-[60px] overflow-hidden">
+    <section className="relative w-full bg-[#111d35] py-[40px] md:py-[60px] overflow-hidden">
+      {/* 히어로-프로세스 구분선 */}
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[rgba(212,175,55,0.4)] to-transparent" />
       <div className="max-w-[1200px] mx-auto px-4 md:px-5 relative z-[1]">
         {/* 헤더 */}
         <div className="text-center mb-[30px] md:mb-10">
@@ -350,8 +369,8 @@ function ProcessSection() {
             성장 전문가가 대표님의 성장을 위해<br />
             역량 분석부터 자금 조달까지 완벽하게 지원합니다
           </p>
-          <p className="text-xs text-[rgba(232,212,168,0.6)] mt-3 leading-[1.6]">
-            ※ 제이앤아이 파트너스는 정책자금 서류작성을 대행하지 않습니다. ※ 기업평가를 하지 않습니다.
+          <p className="text-[9px] md:text-xs text-[rgba(232,212,168,0.6)] mt-3 leading-[1.6]">
+            ※ 제이앤아이 파트너스는 정책자금 서류작성을 대행하지 않습니다.<br className="md:hidden" /> ※ 기업평가를 하지 않습니다.
           </p>
         </div>
 
@@ -668,8 +687,8 @@ function DetailSection() {
             정책자금부터 기업대출까지, 성장 전문가의 정밀한 분석으로<br className="hidden md:block" />
             대표님에게 최적화된 금융 솔루션을 제공합니다
           </p>
-          <p className="text-xs text-[rgba(232,212,168,0.6)] mt-3 leading-[1.6]">
-            ※ 제이앤아이 파트너스는 정책자금 서류작성을 대행하지 않습니다. ※ 기업평가를 하지 않습니다.
+          <p className="text-[9px] md:text-xs text-[rgba(232,212,168,0.6)] mt-3 leading-[1.6]">
+            ※ 제이앤아이 파트너스는 정책자금 서류작성을 대행하지 않습니다.<br className="md:hidden" /> ※ 기업평가를 하지 않습니다.
           </p>
         </div>
 
