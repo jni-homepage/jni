@@ -184,9 +184,7 @@ export default function PostDetailClient({ postId }: { postId: string }) {
 
               {/* CTA 섹션 */}
               <div className="jni-post-cta-section">
-                <div className="jni-post-cta-icon">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                </div>
+                <div className="jni-post-cta-badge">정책자금 경영컨설팅</div>
                 <h3 className="jni-post-cta-title">정책자금 무료 상담</h3>
                 <p className="jni-post-cta-desc">
                   전문 컨설턴트가 기업 맞춤형 자금 솔루션을 제안해 드립니다.
@@ -194,9 +192,9 @@ export default function PostDetailClient({ postId }: { postId: string }) {
                   지금 바로 상담 신청하세요.
                 </p>
                 <div className="jni-post-cta-buttons">
-                  <a href="tel:02-6956-8500" className="jni-post-cta-phone">
+                  <a href="tel:1533-9018" className="jni-post-cta-phone">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                    02-6956-8500
+                    1533-9018
                   </a>
                   <Link href="/#consult-form" className="jni-post-cta-submit">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.855z"/></svg>
@@ -444,7 +442,7 @@ export default function PostDetailClient({ postId }: { postId: string }) {
         .jni-post-body {
           font-size: 16px;
           line-height: 1.9;
-          color: rgba(232, 212, 168, 0.85);
+          color: #f0f0f0;
         }
         .jni-post-body p { margin-bottom: 16px; }
 
@@ -536,33 +534,33 @@ export default function PostDetailClient({ postId }: { postId: string }) {
 
         /* CTA 섹션 */
         .jni-post-cta-section {
-          margin: 0;
+          margin: 40px;
           padding: 40px;
-          background: linear-gradient(135deg, #8b6f3f 0%, #d4af37 100%);
+          background: rgba(20, 35, 65, 0.8);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(212, 175, 55, 0.2);
+          border-radius: 20px;
           text-align: center;
         }
         @media (max-width: 768px) {
-          .jni-post-cta-section { padding: 30px 20px; }
+          .jni-post-cta-section { margin: 24px 20px; padding: 30px 20px; }
         }
 
-        .jni-post-cta-icon {
-          width: 60px;
-          height: 60px;
-          margin: 0 auto 20px;
-          background: rgba(255,255,255,0.15);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        @media (max-width: 768px) {
-          .jni-post-cta-icon { width: 50px; height: 50px; margin-bottom: 16px; }
+        .jni-post-cta-badge {
+          display: inline-block;
+          background: linear-gradient(135deg, #8b6f3f, #d4af37);
+          color: #fff;
+          padding: 6px 18px;
+          border-radius: 20px;
+          font-size: 13px;
+          font-weight: 600;
+          margin-bottom: 20px;
         }
 
         .jni-post-cta-title {
           font-size: 24px;
           font-weight: 700;
-          color: #0f172e;
+          color: #faf8f3;
           margin: 0 0 12px;
         }
         @media (max-width: 768px) {
@@ -571,7 +569,7 @@ export default function PostDetailClient({ postId }: { postId: string }) {
 
         .jni-post-cta-desc {
           font-size: 15px;
-          color: rgba(15, 23, 46, 0.8);
+          color: rgba(232, 212, 168, 0.7);
           line-height: 1.7;
           margin: 0 0 28px;
         }
@@ -591,18 +589,18 @@ export default function PostDetailClient({ postId }: { postId: string }) {
           align-items: center;
           gap: 8px;
           padding: 14px 28px;
-          background: rgba(15,23,46,0.15);
-          border: 2px solid rgba(15,23,46,0.3);
+          background: rgba(212, 175, 55, 0.08);
+          border: 2px solid rgba(212, 175, 55, 0.3);
           border-radius: 30px;
-          color: #0f172e;
+          color: #d4af37;
           font-size: 16px;
           font-weight: 700;
           text-decoration: none;
           transition: all 0.3s;
         }
         .jni-post-cta-phone:hover {
-          background: rgba(15,23,46,0.25);
-          border-color: #0f172e;
+          background: rgba(212, 175, 55, 0.15);
+          border-color: rgba(212, 175, 55, 0.6);
           transform: translateY(-2px);
         }
 
@@ -611,18 +609,18 @@ export default function PostDetailClient({ postId }: { postId: string }) {
           align-items: center;
           gap: 8px;
           padding: 14px 28px;
-          background: #0f172e;
+          background: linear-gradient(135deg, #8b6f3f, #d4af37);
           border-radius: 30px;
-          color: #d4af37;
+          color: #0f172e;
           font-size: 15px;
           font-weight: 700;
           text-decoration: none;
           transition: all 0.3s;
-          box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+          box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
         }
         .jni-post-cta-submit:hover {
           transform: translateY(-2px);
-          box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+          box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4);
         }
 
         @media (max-width: 768px) {
