@@ -1,25 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN
-const AIRTABLE_BASE_ID = process.env.BOARD_BASE_ID || process.env.AIRTABLE_BASE_ID || 'appxU3n3KqoUr3l9e'
-const BOARD_TABLE_ID = process.env.BOARD_TABLE_ID || 'tblBoardPosts'
+const AIRTABLE_BASE_ID = 'appxU3n3KqoUr3l9e'
+const BOARD_TABLE_ID = 'tbl70mSCu4sicfZa5'
 
 // 필드 ID 매핑 (Airtable 인코딩 이슈 방지)
 const FIELD_IDS: Record<string, string> = {
-  제목: 'fld1pvHES6Ijc5L1x',
-  요약: 'fldNWFzgwO82fAIWO',
-  내용: 'fld8IWVV4c40a5PiU',
-  카테고리: 'fldTl58EFbV9fAI3w',
-  금액: 'fldSZfYhSN8CahoPP',
-  작성일: 'fldZsdv5pqaffB7AO',
-  공개여부: 'fldMOzaCsreYRhJ4W',
-  썸네일: 'fldCfKYb0RWvXY2Yy',
+  제목: 'fldZ7fwbfxuSB8h1e',
+  요약: 'fldFM2SrXA57YVpDh',
+  내용: 'fldizthhl55jka0iX',
+  카테고리: 'fldONH3XMUJsVB8UO',
+  금액: 'fldzGiDfPJcb2qmnF',
+  작성일: 'fldiiS0vSWHqMVTNw',
+  공개여부: 'fldM7DjMJMKLrCnV8',
+  썸네일: 'fldTdp4fSsnGkSl68',
 }
 
 const CATEGORY_NAMES: Record<string, string> = {
-  selYQbeJVz5c0jupt: '성공사례',
-  sel4cr925qqRTafi0: '정책자금',
-  selqeqERmlFRqbflF: '인증지원',
+  selM4ZDRvm8PMBpBV: '성공사례',
+  selvmPChs5uR3tLAQ: '정책자금',
+  selfHlxsrswu3QAzO: '인증지원',
 }
 
 interface AirtableField {
