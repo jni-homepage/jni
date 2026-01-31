@@ -19,22 +19,23 @@ function formatDate(dateStr: string) {
   return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`
 }
 
-function categoryColor(cat: string) {
+function categoryStyle(cat: string) {
   switch (cat) {
     case '성공사례':
-      return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+      return 'bg-gradient-to-r from-emerald-600 to-emerald-500'
     case '정책자금':
-      return 'bg-gold/20 text-gold border-gold/30'
+      return 'bg-gradient-to-r from-gold-dark to-gold'
     case '인증지원':
-      return 'bg-amber-500/20 text-amber-400 border-amber-500/30'
+      return 'bg-gradient-to-r from-amber-600 to-amber-500'
     default:
-      return 'bg-gold/20 text-gold border-gold/30'
+      return 'bg-gradient-to-r from-gold-dark to-gold'
   }
 }
 
 export default function BoardSection() {
   const [posts, setPosts] = useState<BoardPost[]>([])
   const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState('all')
 
   useEffect(() => {
     async function loadPosts() {
@@ -45,7 +46,6 @@ export default function BoardSection() {
           const publicPosts = data.posts
             .filter((p: BoardPost) => p.공개여부 !== false)
             .sort((a: BoardPost, b: BoardPost) => new Date(b.작성일).getTime() - new Date(a.작성일).getTime())
-            .slice(0, 5)
           setPosts(publicPosts)
         }
       } catch (e) {
@@ -57,95 +57,111 @@ export default function BoardSection() {
     loadPosts()
   }, [])
 
+  const categories = ['all', '성공사례', '정책자금', '인증지원']
+  const filtered = activeTab === 'all' ? posts : posts.filter(p => p.카테고리 === activeTab)
+
   return (
     <section
-      className="relative w-full py-10 md:py-14 px-4 md:px-8 overflow-hidden"
+      className="relative w-full py-12 md:py-20 px-5 md:px-8 overflow-hidden"
       style={{ background: 'linear-gradient(180deg, #0a1420 0%, #0f172e 50%, #0a1420 100%)' }}
     >
-      <div className="relative z-[1] max-w-wide mx-auto">
+      <div className="relative z-[1] max-w-[1200px] mx-auto">
         {/* 헤더 */}
-        <div className="text-center mb-6 md:mb-10">
-          <h2 className="text-2xl md:text-[42px] font-black text-light mb-2.5 leading-tight">
-            <span className="text-gold">성공사례</span> 게시판
+        <div className="text-center mb-8 md:mb-12">
+          <h2 className="text-[28px] md:text-[42px] font-black text-light mb-3 leading-tight">
+            <span className="gold-gradient-text">성공사례</span> & 소식
           </h2>
-          <p className="text-sm md:text-lg text-body/80">
+          <p className="text-sm md:text-lg text-body/70">
             제이앤아이 파트너스와 함께한 기업들의 실제 지원 스토리
           </p>
         </div>
 
-        {/* 게시판 리스트 */}
-        <div className="flex flex-col gap-3 md:gap-4 max-w-[1000px] mx-auto">
-          {loading && (
-            <div className="text-center py-12 text-body/60 text-sm">
-              게시글을 불러오는 중...
-            </div>
-          )}
-
-          {!loading && posts.length === 0 && (
-            <div className="text-center py-12 text-body/60 text-sm">
-              아직 등록된 성공사례가 없습니다.
-            </div>
-          )}
-
-          {posts.map((post) => (
-            <div
-              key={post.id}
-              className="group grid grid-cols-[1fr] md:grid-cols-[100px_1fr_auto_120px] gap-2 md:gap-5 items-center
-                p-4 md:px-7 md:py-5 bg-[rgba(30,60,120,0.12)] backdrop-blur-[10px]
-                border border-[rgba(212,175,55,0.15)] rounded-xl md:rounded-2xl
-                transition-all duration-300 cursor-pointer
-                hover:bg-[rgba(30,60,120,0.2)] hover:border-[rgba(212,175,55,0.4)]
-                hover:shadow-[0_0_30px_rgba(212,175,55,0.15)]"
+        {/* 카테고리 탭 */}
+        <div className="flex justify-center gap-2 md:gap-3 mb-8 md:mb-10 flex-wrap">
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setActiveTab(cat)}
+              className={`px-5 md:px-6 py-2.5 rounded-full text-[13px] md:text-sm font-semibold transition-all duration-300 border-2
+                ${activeTab === cat
+                  ? 'gold-gradient-bg border-transparent text-[#0f172e]'
+                  : 'bg-transparent border-gold/30 text-body/70 hover:border-gold/60 hover:text-gold'
+                }`}
             >
-              {/* 썸네일 - 데스크톱 */}
-              {post.썸네일 ? (
-                <div className="hidden md:block w-[100px] h-[56px] rounded-lg overflow-hidden bg-[rgba(212,175,55,0.1)]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={post.썸네일} alt={post.제목} className="w-full h-full object-cover" />
-                </div>
-              ) : (
-                <div className="hidden md:flex w-[100px] h-[56px] rounded-lg items-center justify-center
-                  bg-gradient-to-br from-[rgba(30,60,120,0.3)] to-gold/20 text-gold text-[10px] font-bold">
-                  JNI
-                </div>
-              )}
-
-              {/* 제목 + 요약 + 모바일 메타 */}
-              <div className="flex flex-col gap-1 min-w-0">
-                <div className="flex items-center gap-2 md:hidden">
-                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${categoryColor(post.카테고리)}`}>
-                    {post.카테고리 || '성공사례'}
-                  </span>
-                  <span className="text-[11px] text-body/50">{formatDate(post.작성일)}</span>
-                  {post.금액 && <span className="text-[11px] text-gold font-bold ml-auto">{post.금액}</span>}
-                </div>
-                <h4 className="text-[15px] md:text-[17px] font-bold text-light truncate group-hover:text-gold transition-colors">
-                  {post.제목 || '(제목 없음)'}
-                </h4>
-                {post.요약 && (
-                  <p className="text-[12px] md:text-sm text-body/60 truncate">{post.요약}</p>
-                )}
-              </div>
-
-              {/* 카테고리 + 날짜 - 데스크톱 */}
-              <div className="hidden md:flex items-center gap-3">
-                <span className={`text-[12px] font-semibold px-3 py-1 rounded-full border whitespace-nowrap ${categoryColor(post.카테고리)}`}>
-                  {post.카테고리 || '성공사례'}
-                </span>
-                <span className="text-[13px] text-body/50 whitespace-nowrap">{formatDate(post.작성일)}</span>
-              </div>
-
-              {/* 금액 - 데스크톱 */}
-              <div className="hidden md:block text-right">
-                {post.금액 && (
-                  <span className="text-lg font-bold text-gold [text-shadow:0_0_10px_rgba(212,175,55,0.5)]">
-                    {post.금액}
-                  </span>
-                )}
-              </div>
-            </div>
+              {cat === 'all' ? '전체' : cat}
+            </button>
           ))}
         </div>
+
+        {/* 로딩 */}
+        {loading && (
+          <div className="text-center py-16">
+            <div className="w-10 h-10 border-3 border-gold/30 border-t-gold rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-body/50 text-sm">게시글을 불러오는 중...</p>
+          </div>
+        )}
+
+        {/* 빈 상태 */}
+        {!loading && filtered.length === 0 && (
+          <div className="text-center py-16">
+            <div className="text-5xl mb-4 opacity-30">📋</div>
+            <h3 className="text-lg font-semibold text-light mb-2">등록된 게시글이 없습니다</h3>
+            <p className="text-body/50 text-sm">곧 새로운 소식을 전해드릴게요!</p>
+          </div>
+        )}
+
+        {/* 카드 그리드 */}
+        {!loading && filtered.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+            {filtered.slice(0, 9).map(post => (
+              <article
+                key={post.id}
+                className="group bg-[rgba(20,35,65,0.6)] backdrop-blur-[10px] border border-[rgba(212,175,55,0.12)]
+                  rounded-2xl overflow-hidden cursor-pointer
+                  transition-all duration-300
+                  hover:-translate-y-1.5 hover:border-gold/40
+                  hover:shadow-[0_10px_40px_rgba(212,175,55,0.15)]"
+              >
+                {/* 썸네일 */}
+                <div className="w-full h-[160px] md:h-[180px] overflow-hidden relative">
+                  {post.썸네일 ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={post.썸네일}
+                      alt={post.제목}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[rgba(15,23,46,0.8)] to-[rgba(212,175,55,0.15)]">
+                      <span className="text-gold/40 text-4xl font-black tracking-widest">JNI</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* 컨텐츠 */}
+                <div className="p-5">
+                  <span className={`inline-block px-3 py-1 rounded-full text-[11px] font-bold text-white mb-3 ${categoryStyle(post.카테고리)}`}>
+                    {post.카테고리 || '성공사례'}
+                  </span>
+                  <h3 className="text-[15px] md:text-[16px] font-bold text-light mb-2 leading-snug line-clamp-2 group-hover:text-gold transition-colors">
+                    {post.제목 || '(제목 없음)'}
+                  </h3>
+                  {post.요약 && (
+                    <p className="text-[13px] text-body/60 leading-relaxed mb-4 line-clamp-2">
+                      {post.요약}
+                    </p>
+                  )}
+                  <div className="flex items-center justify-between text-[12px] text-body/40">
+                    <span>{formatDate(post.작성일)}</span>
+                    {post.금액 && (
+                      <span className="font-bold text-gold text-[13px]">{post.금액}</span>
+                    )}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )
