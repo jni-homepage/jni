@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import { baseMetadata, OG_IMAGE } from '@/lib/seo/metadata'
+import { baseMetadata } from '@/lib/seo/metadata'
 
 export const metadata: Metadata = {
   ...baseMetadata,
@@ -16,7 +16,12 @@ export const metadata: Metadata = {
     siteName: '제이앤아이 파트너스',
     locale: 'ko_KR',
     type: 'website',
-    images: [OG_IMAGE],
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || '',
+    other: {
+      'naver-site-verification': [process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION || ''],
+    },
   },
 }
 

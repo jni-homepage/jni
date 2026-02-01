@@ -3,14 +3,6 @@ import type { Metadata } from 'next'
 const SITE_URL = 'https://jnipartners.co.kr'
 const SITE_NAME = '제이앤아이 파트너스'
 
-export const OG_IMAGE = {
-  url: `${SITE_URL}/images/og-image.png`,
-  width: 1200,
-  height: 630,
-  alt: '제이앤아이 파트너스 - 정책자금 경영컨설팅 전문기업',
-  type: 'image/png',
-}
-
 export const baseMetadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   applicationName: SITE_NAME,
@@ -36,14 +28,12 @@ export const pageMetadata: Record<string, Metadata> = {
       siteName: SITE_NAME,
       locale: 'ko_KR',
       type: 'website',
-      images: [OG_IMAGE],
     },
     twitter: {
       card: 'summary_large_image',
       title: '제이앤아이 파트너스 | 정책자금 경영컨설팅',
       description:
         '심사 통과율 96%, 체계적 자금조달 전략. 무료 상담 신청하세요.',
-      images: [OG_IMAGE.url],
     },
     alternates: { canonical: SITE_URL },
   },
@@ -60,13 +50,11 @@ export const pageMetadata: Record<string, Metadata> = {
       siteName: SITE_NAME,
       locale: 'ko_KR',
       type: 'website',
-      images: [OG_IMAGE],
     },
     twitter: {
       card: 'summary_large_image',
       title: '회사소개 | 제이앤아이 파트너스',
       description: '정책자금 성장 전문 파트너. 체계적 사전 준비 시스템.',
-      images: [OG_IMAGE.url],
     },
     alternates: { canonical: `${SITE_URL}/company` },
   },
@@ -83,13 +71,11 @@ export const pageMetadata: Record<string, Metadata> = {
       siteName: SITE_NAME,
       locale: 'ko_KR',
       type: 'website',
-      images: [OG_IMAGE],
     },
     twitter: {
       card: 'summary_large_image',
       title: '진행과정 | 제이앤아이 파트너스',
       description: '정책자금 심사 통과율 96%의 체계적 프로세스.',
-      images: [OG_IMAGE.url],
     },
     alternates: { canonical: `${SITE_URL}/process` },
   },
@@ -106,13 +92,11 @@ export const pageMetadata: Record<string, Metadata> = {
       siteName: SITE_NAME,
       locale: 'ko_KR',
       type: 'website',
-      images: [OG_IMAGE],
     },
     twitter: {
       card: 'summary_large_image',
       title: '자금상담 | 제이앤아이 파트너스',
       description: '정책자금 최대 10억, 평균 조달액 2.8억. 무료 상담 신청.',
-      images: [OG_IMAGE.url],
     },
     alternates: { canonical: `${SITE_URL}/fund` },
   },
@@ -129,13 +113,11 @@ export const pageMetadata: Record<string, Metadata> = {
       siteName: SITE_NAME,
       locale: 'ko_KR',
       type: 'website',
-      images: [OG_IMAGE],
     },
     twitter: {
       card: 'summary_large_image',
       title: '전문서비스 | 제이앤아이 파트너스',
       description: '법무·세무·회계·노무 전문가 매칭 서비스.',
-      images: [OG_IMAGE.url],
     },
     alternates: { canonical: `${SITE_URL}/pro` },
   },
@@ -152,13 +134,11 @@ export const pageMetadata: Record<string, Metadata> = {
       siteName: SITE_NAME,
       locale: 'ko_KR',
       type: 'website',
-      images: [OG_IMAGE],
     },
     twitter: {
       card: 'summary_large_image',
       title: '온라인마케팅 | 제이앤아이 파트너스',
       description: '홈페이지·검색광고·SNS·블로그 통합 마케팅 솔루션.',
-      images: [OG_IMAGE.url],
     },
     alternates: { canonical: `${SITE_URL}/mkt` },
   },

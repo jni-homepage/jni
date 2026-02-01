@@ -6,7 +6,19 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/'],
+        disallow: ['/api/', '/dashboard/', '/admin-login'],
+      },
+      {
+        userAgent: 'Yeti',
+        allow: '/',
+      },
+      {
+        userAgent: 'Googlebot',
+        allow: '/',
+      },
+      {
+        userAgent: 'Bingbot',
+        allow: '/',
       },
     ],
     sitemap: 'https://jnipartners.co.kr/sitemap.xml',

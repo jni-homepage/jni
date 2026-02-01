@@ -14,6 +14,12 @@ export function organizationSchema() {
       telephone: PHONE,
       contactType: 'customer service',
       availableLanguage: 'Korean',
+      areaServed: 'KR',
+    },
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: 'KR',
+      addressLocality: '서울',
     },
     sameAs: [SITE_URL],
   }
@@ -39,6 +45,12 @@ export function localBusinessSchema() {
       ratingValue: '4.9',
       reviewCount: '418',
       bestRating: '5',
+    },
+    openingHoursSpecification: {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      opens: '09:00',
+      closes: '18:00',
     },
   }
 }
@@ -147,13 +159,98 @@ export function webSiteSchema() {
     '@type': 'WebSite',
     name: SITE_NAME,
     url: SITE_URL,
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
-      },
-      'query-input': 'required name=search_term_string',
+    inLanguage: 'ko',
+    publisher: {
+      '@type': 'Organization',
+      name: SITE_NAME,
+      url: SITE_URL,
     },
+  }
+}
+
+/** 게시글(Article) 구조화 데이터 - GEO/AEO: 검색엔진·AI가 콘텐츠를 정확히 이해 */
+export function articleSchema(post: {
+  title: string
+  description: string
+  url: string
+  datePublished: string
+  image?: string
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.description,
+    url: post.url,
+    datePublished: post.datePublished,
+    dateModified: post.datePublished,
+    author: {
+      '@type': 'Organization',
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: SITE_NAME,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${SITE_URL}/images/logo.png`,
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': post.url,
+    },
+    ...(post.image ? { image: post.image } : {}),
+  }
+}
+
+/** 진행과정 HowTo 구조화 데이터 - GEO/AEO: AI 어시스턴트가 단계별 안내 가능 */
+export function howToSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: '정책자금 성장 지원 진행과정',
+    description:
+      '제이앤아이 파트너스의 정책자금 성장 지원 6단계 프로세스. 무료 상담 접수부터 사후 관리까지 체계적으로 진행됩니다.',
+    totalTime: 'P90D',
+    step: [
+      {
+        '@type': 'HowToStep',
+        position: 1,
+        name: '무료 상담 접수',
+        text: '전화(1533-9018) 또는 온라인으로 무료 상담을 접수합니다. 기업 현황과 필요 자금 규모를 간단히 알려주시면 됩니다.',
+      },
+      {
+        '@type': 'HowToStep',
+        position: 2,
+        name: '대표자 역량 분석',
+        text: '전문 컨설턴트가 대표자의 역량, 사업 현황, 재무 상태를 정밀 분석하여 강점과 개선점을 도출합니다.',
+      },
+      {
+        '@type': 'HowToStep',
+        position: 3,
+        name: '맞춤형 자금 전략 수립',
+        text: '분석 결과를 바탕으로 정책자금, 기업대출, 보증서 등 최적의 자금 조달 전략을 설계합니다.',
+      },
+      {
+        '@type': 'HowToStep',
+        position: 4,
+        name: '서류 준비 및 사전 역량 강화',
+        text: '필요 서류를 체계적으로 준비하고, 심사 통과율을 높이기 위한 사전 역량 강화 코칭을 진행합니다.',
+      },
+      {
+        '@type': 'HowToStep',
+        position: 5,
+        name: '심사 대비 및 면접 코칭',
+        text: '심사위원 설득 전략을 수립하고, 실전 면접 코칭으로 심사 통과율 96%를 달성합니다.',
+      },
+      {
+        '@type': 'HowToStep',
+        position: 6,
+        name: '자금 확보 및 사후 관리',
+        text: '자금 확보 후에도 활용 모니터링, 후속 지원사업 추천, 추가 자금 조달 등 지속적 성장을 지원합니다.',
+      },
+    ],
   }
 }
