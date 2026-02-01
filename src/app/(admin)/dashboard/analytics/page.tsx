@@ -158,23 +158,20 @@ export default function AnalyticsPage() {
     try {
       const res = await fetch(`/api/analytics?days=${days}`)
       const json = await res.json()
-      if (json.success && json.summary) {
-        const records = json.data || []
-        const summary = json.summary
+      if (json.success && json.data) {
+        const d = json.data
+        const sec = d.avgDuration || 0
         setData({
-          visitors: summary.총방문자 ?? 0,
-          pageviews: summary.총페이지뷰 ?? 0,
-          avgDuration: summary.평균체류 ? `${Math.floor(summary.평균체류 / 60)}분 ${summary.평균체류 % 60}초` : '0분',
-          bounceRate: summary.평균이탈률 ? `${summary.평균이탈률}%` : '0%',
-          dailyVisitors: records.map((r: { 날짜: string; 방문자수: number }) => ({
-            date: r.날짜,
-            count: r.방문자수 || 0,
-          })).reverse(),
-          trafficSources: [],
-          referrers: [],
-          devices: [],
-          topPages: [],
-          regions: [],
+          visitors: d.visitors ?? 0,
+          pageviews: d.pageviews ?? 0,
+          avgDuration: sec > 0 ? `${Math.floor(sec / 60)}분 ${Math.round(sec % 60)}초` : '0분',
+          bounceRate: d.bounceRate !== undefined ? `${d.bounceRate}%` : '0%',
+          dailyVisitors: d.dailyVisitors || [],
+          trafficSources: d.trafficSources || [],
+          referrers: d.referrers || [],
+          devices: d.devices || [],
+          topPages: d.topPages || [],
+          regions: d.regions || [],
         })
         setConnected(true)
       } else {
