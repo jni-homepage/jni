@@ -19,7 +19,7 @@ export default function DashHeader({ onMenuToggle }: DashHeaderProps) {
       {/* Left: Hamburger (mobile) */}
       <button
         onClick={onMenuToggle}
-        className="lg:hidden w-10 h-10 rounded-xl flex items-center justify-center text-gray-400 hover:bg-white/[0.06] hover:text-gray-200 active:scale-95 transition-all"
+        className="md:hidden w-10 h-10 rounded-xl flex items-center justify-center text-gray-400 hover:bg-white/[0.06] hover:text-gray-200 active:scale-95 transition-all"
         aria-label="메뉴 열기"
       >
         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -28,7 +28,7 @@ export default function DashHeader({ onMenuToggle }: DashHeaderProps) {
       </button>
 
       {/* Center spacer for desktop */}
-      <div className="hidden lg:block flex-1" />
+      <div className="hidden md:block flex-1" />
 
       {/* Right: Admin info + logout */}
       <div className="flex items-center gap-3">

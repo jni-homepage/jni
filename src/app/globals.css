@@ -55,6 +55,17 @@ body {
   background: var(--gold);
 }
 
+/* 스크롤바 숨기기 */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 /* 글래스모피즘 유틸리티 */
 @layer utilities {
   .glass {

@@ -26,7 +26,7 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-[#0d1829] flex">
-      {/* Sidebar */}
+      {/* Sidebar - visible on md+ */}
       <Sidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
@@ -37,14 +37,14 @@ export default function DashboardLayout({
         {/* Header */}
         <DashHeader onMenuToggle={() => setSidebarOpen((prev) => !prev)} />
 
-        {/* Page content - pb-20 for mobile bottom nav space */}
-        <main className="flex-1 p-4 lg:p-8 overflow-auto pb-20 lg:pb-8">
+        {/* Mobile horizontal nav bar - below header */}
+        <MobileBottomNav />
+
+        {/* Page content */}
+        <main className="flex-1 p-4 md:p-8 overflow-auto">
           {children}
         </main>
       </div>
-
-      {/* Mobile bottom navigation */}
-      <MobileBottomNav />
     </div>
   )
 }

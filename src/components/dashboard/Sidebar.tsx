@@ -75,7 +75,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Mobile overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300"
           onClick={onClose}
           aria-hidden="true"
         />
@@ -87,7 +87,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           fixed top-0 left-0 z-50 h-full w-[260px] bg-navy-dark
           flex flex-col
           transform transition-transform duration-300 ease-in-out
-          lg:translate-x-0 lg:static lg:z-auto
+          md:translate-x-0 md:static md:z-auto
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         `}
       >
@@ -104,7 +104,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           </Link>
           <button
             onClick={onClose}
-            className="ml-auto lg:hidden w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 transition-colors"
+            className="ml-auto md:hidden w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 transition-colors"
             aria-label="메뉴 닫기"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
