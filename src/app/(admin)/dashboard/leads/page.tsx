@@ -121,6 +121,27 @@ export default function LeadsPage() {
     } catch (error) { console.error('Memo save error:', error); showToast('error', '네트워크 오류') } finally { setSavingMemo(false) }
   }
 
+  const handleDelete = async (e: React.MouseEvent, lead: Lead) => {
+    e.stopPropagation()
+    if (!confirm(`"${lead.기업명 || lead.대표자명}" 접수를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) return
+    setUpdatingId(lead.id)
+    try {
+      const res = await fetch(`/api/leads?id=${lead.id}`, { method: 'DELETE' })
+      const data = await res.json()
+      if (data.success) {
+        setLeads((prev) => prev.filter((l) => l.id !== lead.id))
+        setStats((prev) => {
+          const updated = { ...prev }
+          updated.total--
+          const s = lead.상태 as keyof Stats
+          if (typeof updated[s] === 'number') (updated[s] as number)--
+          return updated
+        })
+        showToast('success', `${lead.기업명 || lead.대표자명} 삭제됨`)
+      } else { showToast('error', '삭제 실패') }
+    } catch { showToast('error', '네트워크 오류') } finally { setUpdatingId(null) }
+  }
+
   const filteredLeads = leads.filter((lead) => {
     const matchFilter = filter === '전체' || lead.상태 === filter
     if (!search) return matchFilter
@@ -234,6 +255,7 @@ export default function LeadsPage() {
                               {lead.상태 !== '상담중' && lead.상태 !== '진행중' && lead.상태 !== '완료' && (<button onClick={(e) => handleQuickStatus(e, lead, '상담중')} className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-purple-500/15 text-purple-400 hover:bg-purple-500/25 transition-colors" title="상담중으로 변경"><svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>통화</button>)}
                               {lead.상태 !== '완료' && (<button onClick={(e) => handleQuickStatus(e, lead, '완료')} className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-green-500/15 text-green-400 hover:bg-green-500/25 transition-colors" title="완료로 변경"><svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>전환</button>)}
                               {(lead.상태 === '상담중' || lead.상태 === '진행중' || lead.상태 === '완료') && (<button onClick={(e) => handleQuickStatus(e, lead, '신규')} className="inline-flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs text-gray-500 hover:bg-white/[0.06] transition-colors" title="신규로 되돌리기"><svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg></button>)}
+                              <button onClick={(e) => handleDelete(e, lead)} className="inline-flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs text-red-400 hover:bg-red-500/15 transition-colors" title="삭제"><svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
                             </>
                           )}
                         </div>
@@ -289,6 +311,7 @@ export default function LeadsPage() {
                         {lead.상태 !== '완료' && (<button onClick={(e) => handleQuickStatus(e, lead, '완료')} className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-green-500/15 text-green-400 active:bg-green-500/25 border border-green-500/20"><svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>전환</button>)}
                         {(lead.상태 === '상담중' || lead.상태 === '진행중' || lead.상태 === '완료') && (<button onClick={(e) => handleQuickStatus(e, lead, '신규')} className="flex items-center gap-1 px-2.5 py-2 rounded-xl text-xs text-gray-500 active:bg-white/[0.06] border border-white/[0.08]"><svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>되돌리기</button>)}
                         {!lead.메모 && editingMemo?.id !== lead.id && (<button onClick={(e) => { e.stopPropagation(); setEditingMemo({ id: lead.id, value: '' }) }} className="flex items-center gap-1 px-2.5 py-2 rounded-xl text-xs text-gray-500 active:bg-white/[0.06] border border-white/[0.08]"><svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>메모</button>)}
+                        <button onClick={(e) => handleDelete(e, lead)} className="flex items-center gap-1 px-2.5 py-2 rounded-xl text-xs text-red-400 active:bg-red-500/15 border border-red-500/20"><svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>삭제</button>
                       </>
                     )}
                   </div>

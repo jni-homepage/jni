@@ -1,6 +1,7 @@
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import JsonLd from '@/components/JsonLd'
+import PopupModal from '@/components/PopupModal'
 import { organizationSchema } from '@/lib/seo/schemas'
 
 export default function SiteLayout({
@@ -14,6 +15,7 @@ export default function SiteLayout({
       <Header />
       <main>{children}</main>
       <Footer />
+      <PopupModal />
     </>
   )
 }
