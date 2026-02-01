@@ -1,10 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
-import JsonLd from '@/components/JsonLd'
 import { baseMetadata, OG_IMAGE } from '@/lib/seo/metadata'
-import { organizationSchema } from '@/lib/seo/schemas'
 
 export const metadata: Metadata = {
   ...baseMetadata,
@@ -32,10 +28,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="font-sans antialiased">
-        <JsonLd data={organizationSchema()} />
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        {children}
       </body>
     </html>
   )

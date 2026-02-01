@@ -139,7 +139,7 @@ function buildCustomerEmailHtml(data: ConsultData, now: string): string {
   </div>
 
   <div style="padding:35px 30px;border:1px solid #e5e7eb;border-top:none;">
-    <p style="font-size:16px;color:#1f2937;line-height:1.7;margin:0 0 20px;">
+    <p style="font-size:13px;color:#1f2937;line-height:1.7;margin:0 0 20px;">
       <strong>${data.name}</strong> 대표님, 안녕하세요.<br>
       <strong style="color:#d4af37;">제이앤아이 파트너스</strong>에 상담을 접수해 주셔서 감사합니다.
     </p>

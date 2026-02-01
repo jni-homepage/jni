@@ -101,3 +101,27 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 })
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  const { searchParams } = new URL(request.url)
+  const id = searchParams.get('id')
+
+  if (!id) {
+    return NextResponse.json({ success: false, error: 'ID가 필요합니다.' }, { status: 400 })
+  }
+
+  try {
+    const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${BOARD_TABLE_ID}/${id}`
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}` },
+    })
+
+    if (!response.ok) throw new Error(`Airtable Error: ${response.status}`)
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('Board DELETE Error:', error)
+    return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 })
+  }
+}
