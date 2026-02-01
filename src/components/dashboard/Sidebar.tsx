@@ -3,7 +3,13 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-const NAV_ITEMS = [
+interface NavItem {
+  label: string
+  href: string
+  icon: React.ReactNode
+}
+
+const NAV_ITEMS: NavItem[] = [
   {
     label: '대시보드',
     href: '/dashboard',
@@ -32,12 +38,20 @@ const NAV_ITEMS = [
     ),
   },
   {
-    label: '설정',
-    href: '/dashboard/settings',
+    label: '유입통계',
+    href: '/dashboard/analytics',
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+      </svg>
+    ),
+  },
+  {
+    label: '팝업 관리',
+    href: '/dashboard/popups',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
       </svg>
     ),
   },
@@ -51,36 +65,46 @@ interface SidebarProps {
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname()
 
+  const isActiveRoute = (href: string) => {
+    if (href === '/dashboard') return pathname === '/dashboard'
+    return pathname.startsWith(href)
+  }
+
   return (
     <>
       {/* Mobile overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300"
           onClick={onClose}
+          aria-hidden="true"
         />
       )}
 
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-0 left-0 z-50 h-full w-64 bg-navy border-r border-white/10
+          fixed top-0 left-0 z-50 h-full w-[260px] bg-navy-dark
+          flex flex-col
           transform transition-transform duration-300 ease-in-out
           lg:translate-x-0 lg:static lg:z-auto
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         `}
       >
-        {/* Logo */}
-        <div className="h-16 flex items-center px-6 border-b border-white/10">
-          <Link href="/dashboard" className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gold/20 flex items-center justify-center">
-              <span className="text-gold font-bold text-sm">JNI</span>
+        {/* Logo area */}
+        <div className="h-[72px] flex items-center px-6 border-b border-white/[0.06]">
+          <Link href="/dashboard" className="flex items-center gap-3 group">
+            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-gold to-gold-dark flex items-center justify-center shadow-lg shadow-gold/20">
+              <span className="text-navy-dark font-extrabold text-xs tracking-wider">JNI</span>
             </div>
-            <span className="text-white font-semibold">관리자</span>
+            <div className="flex flex-col">
+              <span className="text-white font-bold text-[15px] leading-tight">JNI Admin</span>
+              <span className="text-gold/60 text-[10px] font-medium tracking-wide">MANAGEMENT SYSTEM</span>
+            </div>
           </Link>
           <button
             onClick={onClose}
-            className="ml-auto lg:hidden text-gray-400 hover:text-white"
+            className="ml-auto lg:hidden w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/10 transition-colors"
             aria-label="메뉴 닫기"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -89,40 +113,62 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           </button>
         </div>
 
+        {/* Section label */}
+        <div className="px-6 pt-6 pb-2">
+          <p className="text-[10px] font-semibold text-gray-600 uppercase tracking-[0.12em]">Main Menu</p>
+        </div>
+
         {/* Navigation */}
-        <nav className="p-4 space-y-1">
+        <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
           {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href
+            const active = isActiveRoute(item.href)
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={onClose}
                 className={`
-                  flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors
-                  ${isActive
-                    ? 'bg-gold/10 text-gold border border-gold/20'
-                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  relative flex items-center gap-3 px-4 py-3 rounded-xl text-[13px] font-medium
+                  transition-all duration-200 group
+                  ${active
+                    ? 'text-gold bg-gold/[0.08]'
+                    : 'text-gray-400 hover:text-white hover:bg-white/[0.04]'
                   }
                 `}
               >
-                {item.icon}
-                {item.label}
+                {/* Active indicator - left gold bar */}
+                {active && (
+                  <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-gold rounded-r-full" />
+                )}
+                <span className={`flex-shrink-0 transition-colors duration-200 ${active ? 'text-gold' : 'text-gray-500 group-hover:text-gray-300'}`}>
+                  {item.icon}
+                </span>
+                <span>{item.label}</span>
+                {active && (
+                  <span className="ml-auto w-1.5 h-1.5 rounded-full bg-gold" />
+                )}
               </Link>
             )
           })}
         </nav>
 
-        {/* Footer */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10">
+        {/* Divider */}
+        <div className="mx-4 border-t border-white/[0.06]" />
+
+        {/* Footer - site link */}
+        <div className="p-3 pb-6">
           <Link
             href="/"
-            className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-colors"
+            target="_blank"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl text-[13px] text-gray-500 hover:text-gold-light hover:bg-white/[0.04] transition-all duration-200 group"
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-5 h-5 flex-shrink-0 text-gray-600 group-hover:text-gold-light transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg>
-            사이트 바로가기
+            <span>사이트 바로가기</span>
+            <svg className="w-3.5 h-3.5 ml-auto opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 text-gold-light" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </Link>
         </div>
       </aside>

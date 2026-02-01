@@ -69,6 +69,7 @@ export async function GET(request: NextRequest) {
       상담중: records.filter((r) => r.상태 === '상담중').length,
       진행중: records.filter((r) => r.상태 === '진행중').length,
       완료: records.filter((r) => r.상태 === '완료').length,
+      블랙리스트: records.filter((r) => r.상태 === '블랙리스트').length,
     }
 
     return NextResponse.json({ success: true, leads: records, stats })
@@ -103,6 +104,31 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[JNI] Leads PATCH error:', error)
+    return NextResponse.json(
+      { success: false, error: (error as Error).message },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+
+    if (!id) {
+      return NextResponse.json(
+        { success: false, error: 'ID가 필요합니다.' },
+        { status: 400 }
+      )
+    }
+
+    const base = getBase()
+    await base(AIRTABLE_TABLE).destroy(id)
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('[JNI] Leads DELETE error:', error)
     return NextResponse.json(
       { success: false, error: (error as Error).message },
       { status: 500 }
