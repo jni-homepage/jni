@@ -41,74 +41,166 @@ export async function GET(request: NextRequest) {
     const property = `properties/${GA4_PROPERTY_ID}`
     const dateRanges = [{ startDate: `${days}daysAgo`, endDate: 'today' }]
 
-    const [summary, daily, sources, referrers, devices, pages, regions] = await Promise.all([
-      client.runReport({
-        property,
-        dateRanges,
-        metrics: [
-          { name: 'totalUsers' },
-          { name: 'screenPageViews' },
-          { name: 'averageSessionDuration' },
-          { name: 'bounceRate' },
-        ],
-      }),
-      client.runReport({
-        property,
-        dateRanges,
-        dimensions: [{ name: 'date' }],
-        metrics: [{ name: 'totalUsers' }],
-        orderBys: [{ dimension: { dimensionName: 'date' } }],
-      }),
-      client.runReport({
-        property,
-        dateRanges,
-        dimensions: [{ name: 'sessionDefaultChannelGroup' }],
-        metrics: [{ name: 'sessions' }],
-        orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
-        limit: 10,
-      }),
-      client.runReport({
-        property,
-        dateRanges,
-        dimensions: [{ name: 'sessionSource' }],
-        metrics: [{ name: 'sessions' }],
-        orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
-        limit: 10,
-      }),
-      client.runReport({
-        property,
-        dateRanges,
-        dimensions: [{ name: 'deviceCategory' }],
-        metrics: [{ name: 'sessions' }],
-        orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
-      }),
-      client.runReport({
-        property,
-        dateRanges,
-        dimensions: [{ name: 'pagePath' }],
-        metrics: [{ name: 'screenPageViews' }],
-        orderBys: [{ metric: { metricName: 'screenPageViews' }, desc: true }],
-        limit: 10,
-      }),
-      client.runReport({
-        property,
-        dateRanges,
-        dimensions: [{ name: 'city' }],
-        metrics: [{ name: 'sessions' }],
-        orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
-        limit: 10,
-      }),
-    ])
+    // Realtime reports (last 30 min)
+    let realtimeUsers = 0
+    let realtimePages: { path: string; users: number }[] = []
+    try {
+      const [rtSummary, rtPages] = await Promise.all([
+        client.runRealtimeReport({
+          property,
+          metrics: [{ name: 'activeUsers' }],
+        }),
+        client.runRealtimeReport({
+          property,
+          dimensions: [{ name: 'unifiedScreenName' }],
+          metrics: [{ name: 'activeUsers' }],
+          orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
+          limit: 5,
+        }),
+      ])
+      realtimeUsers = val(rtSummary[0]?.rows?.[0], 0)
+      realtimePages = (rtPages[0]?.rows || []).map((r) => ({
+        path: dim(r),
+        users: val(r, 0),
+      }))
+    } catch {
+      // Realtime report failure - silent
+    }
+
+    // Batch 1: summary, daily, sources, referrers, devices (5 reports)
+    const [batch1] = await client.batchRunReports({
+      property,
+      requests: [
+        {
+          dateRanges,
+          metrics: [
+            { name: 'totalUsers' },
+            { name: 'screenPageViews' },
+            { name: 'averageSessionDuration' },
+            { name: 'bounceRate' },
+          ],
+        },
+        {
+          dateRanges,
+          dimensions: [{ name: 'date' }],
+          metrics: [{ name: 'totalUsers' }],
+          orderBys: [{ dimension: { dimensionName: 'date' } }],
+        },
+        {
+          dateRanges,
+          dimensions: [{ name: 'sessionDefaultChannelGroup' }],
+          metrics: [{ name: 'sessions' }],
+          orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
+          limit: 10,
+        },
+        {
+          dateRanges,
+          dimensions: [{ name: 'sessionSource' }],
+          metrics: [{ name: 'sessions' }],
+          orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
+          limit: 10,
+        },
+        {
+          dateRanges,
+          dimensions: [{ name: 'deviceCategory' }],
+          metrics: [{ name: 'sessions' }],
+          orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
+        },
+      ],
+    })
+
+    // Batch 2: pages, regions, event counts, page flow, page conversions (5 reports)
+    const [batch2] = await client.batchRunReports({
+      property,
+      requests: [
+        {
+          dateRanges,
+          dimensions: [{ name: 'pagePath' }],
+          metrics: [{ name: 'screenPageViews' }],
+          orderBys: [{ metric: { metricName: 'screenPageViews' }, desc: true }],
+          limit: 10,
+        },
+        {
+          dateRanges,
+          dimensions: [{ name: 'city' }],
+          metrics: [{ name: 'sessions' }],
+          orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
+          limit: 10,
+        },
+        // Event counts for funnel + conversions
+        {
+          dateRanges,
+          dimensions: [{ name: 'eventName' }],
+          metrics: [{ name: 'eventCount' }],
+          dimensionFilter: {
+            filter: {
+              fieldName: 'eventName',
+              inListFilter: {
+                values: [
+                  'cta_click',
+                  'phone_click',
+                  'form_visible',
+                  'form_start',
+                  'form_submit',
+                  'scroll_depth',
+                ],
+              },
+            },
+          },
+        },
+        // Page flow: pagePath with sessions for flow visualization
+        {
+          dateRanges,
+          dimensions: [{ name: 'pagePath' }, { name: 'pageReferrer' }],
+          metrics: [{ name: 'sessions' }],
+          orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
+          limit: 20,
+        },
+        // Page conversions: events per page
+        {
+          dateRanges,
+          dimensions: [{ name: 'pagePath' }, { name: 'eventName' }],
+          metrics: [{ name: 'eventCount' }],
+          dimensionFilter: {
+            filter: {
+              fieldName: 'eventName',
+              inListFilter: {
+                values: ['cta_click', 'phone_click', 'form_submit'],
+              },
+            },
+          },
+          orderBys: [{ metric: { metricName: 'eventCount' }, desc: true }],
+          limit: 20,
+        },
+      ],
+    })
+
+    const reports1 = batch1?.reports || []
+    const reports2 = batch2?.reports || []
+
+    // Batch 1 results
+    const summary = reports1[0]
+    const daily = reports1[1]
+    const sources = reports1[2]
+    const referrers = reports1[3]
+    const devices = reports1[4]
+
+    // Batch 2 results
+    const pages = reports2[0]
+    const regions = reports2[1]
+    const eventCounts = reports2[2]
+    const pageFlowReport = reports2[3]
+    const pageConversions = reports2[4]
 
     // Summary
-    const sRow = summary[0]?.rows?.[0]
+    const sRow = summary?.rows?.[0]
     const visitors = val(sRow, 0)
     const pageviews = val(sRow, 1)
     const avgDurationSec = parseFloat(sRow?.metricValues?.[2]?.value || '0')
     const bounceRateRaw = parseFloat(sRow?.metricValues?.[3]?.value || '0')
 
     // Daily visitors
-    const dailyVisitors = (daily[0]?.rows || []).map((row) => {
+    const dailyVisitors = (daily?.rows || []).map((row) => {
       const d = row.dimensionValues?.[0]?.value || ''
       return {
         date: d.length === 8 ? `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}` : d,
@@ -117,7 +209,7 @@ export async function GET(request: NextRequest) {
     })
 
     // Traffic sources
-    const srcRows = sources[0]?.rows || []
+    const srcRows = sources?.rows || []
     const srcTotal = srcRows.reduce((s, r) => s + val(r, 0), 0)
     const trafficSources = srcRows.map((r) => {
       const count = val(r, 0)
@@ -125,14 +217,14 @@ export async function GET(request: NextRequest) {
     })
 
     // Referrers
-    const refRows = referrers[0]?.rows || []
+    const refRows = referrers?.rows || []
     const referrerList = refRows.map((r) => ({
       url: dim(r),
       count: val(r, 0),
     }))
 
     // Devices
-    const devRows = devices[0]?.rows || []
+    const devRows = devices?.rows || []
     const devTotal = devRows.reduce((s, r) => s + val(r, 0), 0)
     const deviceList = devRows.map((r) => {
       const count = val(r, 0)
@@ -142,23 +234,71 @@ export async function GET(request: NextRequest) {
     })
 
     // Top pages
-    const pageRows = pages[0]?.rows || []
+    const pageRows = pages?.rows || []
     const topPages = pageRows.map((r) => ({
       path: dim(r),
       views: val(r, 0),
     }))
 
     // Regions
-    const regRows = regions[0]?.rows || []
+    const regRows = regions?.rows || []
     const regTotal = regRows.reduce((s, r) => s + val(r, 0), 0)
     const regionList = regRows.map((r) => {
       const count = val(r, 0)
       return { name: dim(r), count, percent: calcPercent(count, regTotal) }
     })
 
+    // Event counts → conversions map
+    const eventMap: Record<string, number> = {}
+    for (const row of eventCounts?.rows || []) {
+      eventMap[dim(row)] = val(row, 0)
+    }
+
+    const conversions = {
+      phone_click: eventMap['phone_click'] || 0,
+      cta_click: eventMap['cta_click'] || 0,
+      form_submit: eventMap['form_submit'] || 0,
+      form_visible: eventMap['form_visible'] || 0,
+      form_start: eventMap['form_start'] || 0,
+      scroll_depth: eventMap['scroll_depth'] || 0,
+    }
+
+    // Funnel: visitors → cta_click → form_visible → form_start → form_submit
+    const funnel = [
+      { label: '방문자', value: visitors, eventName: 'session_start' },
+      { label: 'CTA 클릭', value: conversions.cta_click, eventName: 'cta_click' },
+      { label: '폼 노출', value: conversions.form_visible, eventName: 'form_visible' },
+      { label: '입력 시작', value: conversions.form_start, eventName: 'form_start' },
+      { label: '폼 제출', value: conversions.form_submit, eventName: 'form_submit' },
+    ]
+
+    // Page flow
+    const flowNodes: { page: string; views: number }[] = topPages.slice(0, 8).map((p) => ({
+      page: p.path,
+      views: p.views,
+    }))
+
+    const flowLinks: { from: string; to: string; count: number }[] = []
+    for (const row of pageFlowReport?.rows || []) {
+      const toPage = dim(row, 0)
+      let fromPage = dim(row, 1)
+      const count = val(row, 0)
+      if (fromPage && fromPage !== '기타' && toPage) {
+        // Clean referrer to path only
+        try {
+          const url = new URL(fromPage, 'https://placeholder.com')
+          fromPage = url.pathname
+        } catch {
+          // keep as is
+        }
+        flowLinks.push({ from: fromPage, to: toPage, count })
+      }
+    }
+
     return NextResponse.json({
       success: true,
       data: {
+        realtime: { activeUsers: realtimeUsers, pages: realtimePages },
         visitors,
         pageviews,
         avgDuration: Math.round(avgDurationSec),
@@ -169,6 +309,9 @@ export async function GET(request: NextRequest) {
         devices: deviceList,
         topPages,
         regions: regionList,
+        conversions,
+        funnel,
+        pageFlow: { nodes: flowNodes, links: flowLinks.slice(0, 15) },
       },
     })
   } catch (error) {

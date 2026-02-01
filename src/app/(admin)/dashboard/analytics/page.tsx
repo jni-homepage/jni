@@ -1,9 +1,37 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
+import FunnelChart from '@/components/analytics/FunnelChart'
+import PageFlowDiagram from '@/components/analytics/PageFlowDiagram'
 
 /* ────────────── 타입 ────────────── */
+interface RealtimeData {
+  activeUsers: number
+  pages: { path: string; users: number }[]
+}
+
+interface ConversionsData {
+  phone_click: number
+  cta_click: number
+  form_submit: number
+  form_visible: number
+  form_start: number
+  scroll_depth: number
+}
+
+interface FunnelStep {
+  label: string
+  value: number
+  eventName: string
+}
+
+interface PageFlowData {
+  nodes: { page: string; views: number }[]
+  links: { from: string; to: string; count: number }[]
+}
+
 interface AnalyticsData {
+  realtime: RealtimeData
   visitors: number
   pageviews: number
   avgDuration: string
@@ -14,6 +42,9 @@ interface AnalyticsData {
   devices: { type: string; count: number; percent: number }[]
   topPages: { path: string; views: number }[]
   regions: { name: string; count: number; percent: number }[]
+  conversions: ConversionsData
+  funnel: FunnelStep[]
+  pageFlow: PageFlowData
 }
 
 const PERIOD_OPTIONS = [
@@ -40,6 +71,10 @@ function AnalyticsStatCard({
     green: { bg: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', iconBg: 'bg-emerald-500/15' },
     purple: { bg: 'bg-purple-500/10 text-purple-400 border-purple-500/20', iconBg: 'bg-purple-500/15' },
     orange: { bg: 'bg-orange-500/10 text-orange-400 border-orange-500/20', iconBg: 'bg-orange-500/15' },
+    amber: { bg: 'bg-amber-500/10 text-amber-400 border-amber-500/20', iconBg: 'bg-amber-500/15' },
+    rose: { bg: 'bg-rose-500/10 text-rose-400 border-rose-500/20', iconBg: 'bg-rose-500/15' },
+    cyan: { bg: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20', iconBg: 'bg-cyan-500/15' },
+    indigo: { bg: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20', iconBg: 'bg-indigo-500/15' },
   }
   const scheme = colorMap[color] || colorMap.blue
 
@@ -162,6 +197,7 @@ export default function AnalyticsPage() {
         const d = json.data
         const sec = d.avgDuration || 0
         setData({
+          realtime: d.realtime || { activeUsers: 0, pages: [] },
           visitors: d.visitors ?? 0,
           pageviews: d.pageviews ?? 0,
           avgDuration: sec > 0 ? `${Math.floor(sec / 60)}분 ${Math.round(sec % 60)}초` : '0분',
@@ -172,6 +208,12 @@ export default function AnalyticsPage() {
           devices: d.devices || [],
           topPages: d.topPages || [],
           regions: d.regions || [],
+          conversions: d.conversions || {
+            phone_click: 0, cta_click: 0, form_submit: 0,
+            form_visible: 0, form_start: 0, scroll_depth: 0,
+          },
+          funnel: d.funnel || [],
+          pageFlow: d.pageFlow || { nodes: [], links: [] },
         })
         setConnected(true)
       } else {
@@ -213,6 +255,37 @@ export default function AnalyticsPage() {
         </div>
       </div>
 
+      {/* GA4 연결 상태 + 실시간 */}
+      {!loading && connected && (
+        <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <div className="w-3 h-3 bg-emerald-400 rounded-full" />
+                <div className="absolute inset-0 w-3 h-3 bg-emerald-400 rounded-full animate-ping" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-emerald-300">GA4 연동됨</p>
+                <p className="text-xs text-emerald-500">Property ID: 522393091</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-3xl font-bold text-emerald-300">{data?.realtime.activeUsers ?? 0}</p>
+              <p className="text-xs text-emerald-500">실시간 접속자 (30분)</p>
+            </div>
+          </div>
+          {data && data.realtime.pages.length > 0 && (
+            <div className="mt-3 pt-3 border-t border-emerald-500/20 flex flex-wrap gap-2">
+              {data.realtime.pages.map((p, i) => (
+                <span key={i} className="text-xs bg-emerald-500/15 text-emerald-400 px-2 py-1 rounded-lg">
+                  {p.path} ({p.users})
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* GA4 미연결 안내 */}
       {!connected && !loading && (
         <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-6 text-center">
@@ -238,7 +311,7 @@ export default function AnalyticsPage() {
         </div>
       )}
 
-      {/* 통계 카드 */}
+      {/* 기본 통계 카드 4x */}
       {!loading && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <AnalyticsStatCard
@@ -285,6 +358,63 @@ export default function AnalyticsPage() {
         </div>
       )}
 
+      {/* 전환 지표 카드 4x (NEW) */}
+      {!loading && data && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <AnalyticsStatCard
+            label="전화 클릭"
+            value={data.conversions.phone_click.toLocaleString()}
+            color="amber"
+            icon={
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+            }
+          />
+          <AnalyticsStatCard
+            label="CTA 클릭"
+            value={data.conversions.cta_click.toLocaleString()}
+            color="cyan"
+            icon={
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+              </svg>
+            }
+          />
+          <AnalyticsStatCard
+            label="폼 제출"
+            value={data.conversions.form_submit.toLocaleString()}
+            color="rose"
+            icon={
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            }
+          />
+          <AnalyticsStatCard
+            label="스크롤 90%"
+            value={data.conversions.scroll_depth.toLocaleString()}
+            color="indigo"
+            icon={
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+            }
+          />
+        </div>
+      )}
+
+      {/* 퍼널 분석 패널 (NEW) */}
+      {!loading && data && (
+        <div className="bg-[#141e33] rounded-2xl border border-white/[0.06] p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-white text-sm">전환 퍼널</h3>
+            <span className="text-[10px] text-gray-500">방문 &rarr; CTA &rarr; 폼 노출 &rarr; 입력 &rarr; 제출</span>
+          </div>
+          <FunnelChart steps={data.funnel} />
+        </div>
+      )}
+
       {/* 차트 영역 */}
       {!loading && (
         <div className="bg-[#141e33] rounded-2xl border border-white/[0.06] p-6">
@@ -298,6 +428,17 @@ export default function AnalyticsPage() {
               </div>
             )}
           </div>
+        </div>
+      )}
+
+      {/* 페이지 흐름 다이어그램 (NEW) */}
+      {!loading && data && (
+        <div className="bg-[#141e33] rounded-2xl border border-white/[0.06] p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-white text-sm">페이지 흐름</h3>
+            <span className="text-[10px] text-gray-500">상위 페이지별 조회수 및 이동 경로</span>
+          </div>
+          <PageFlowDiagram nodes={data.pageFlow.nodes} links={data.pageFlow.links} />
         </div>
       )}
 

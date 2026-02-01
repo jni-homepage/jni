@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, FormEvent } from 'react'
+import { useState, useEffect, useRef, FormEvent } from 'react'
+import { trackFormVisible, trackFormStart, trackFormSubmit } from '@/lib/gtag'
 
 const FUND_TYPES = ['창업자금', '운전자금', '시설자금', '기타자금']
 const INDUSTRIES = ['제조업', '도소매업', '서비스업', '건설업', 'IT/소프트웨어', '기타']
@@ -29,6 +30,35 @@ export default function ConsultForm() {
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [selectedFundTypes, setSelectedFundTypes] = useState<string[]>([])
   const [showPrivacy, setShowPrivacy] = useState(false)
+  const sectionRef = useRef<HTMLElement>(null)
+  const formStarted = useRef(false)
+
+  // form_visible: IntersectionObserver
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el) return
+    let fired = false
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !fired) {
+          fired = true
+          trackFormVisible(window.location.pathname)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.3 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  // form_start: first field focus
+  const handleFieldFocus = (fieldName: string) => {
+    if (!formStarted.current) {
+      formStarted.current = true
+      trackFormStart(window.location.pathname, fieldName)
+    }
+  }
 
   const toggleFundType = (type: string) => {
     setSelectedFundTypes((prev) =>
@@ -86,9 +116,11 @@ export default function ConsultForm() {
 
       if (!res.ok) throw new Error('Submit failed')
 
+      trackFormSubmit(window.location.pathname)
       setStatus('success')
       form.reset()
       setSelectedFundTypes([])
+      formStarted.current = false
       setTimeout(() => setStatus('idle'), 5000)
     } catch {
       setStatus('error')
@@ -99,7 +131,7 @@ export default function ConsultForm() {
   }
 
   return (
-    <section id="consult-form" className="section-dark section-padding">
+    <section id="consult-form" ref={sectionRef} className="section-dark section-padding">
       <div className="max-w-content mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.5fr] gap-10 lg:gap-[60px] items-start">
           {/* 좌측 정보 */}
@@ -158,23 +190,23 @@ export default function ConsultForm() {
             <form onSubmit={handleSubmit}>
               {/* 기본 정보 - 4열 */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 md:gap-5 mb-3 md:mb-4">
-                <FormField label="기업명" name="company" required />
-                <FormField label="사업자번호" name="bizno" placeholder="000-00-00000" required onFormat={formatBizNo} />
-                <FormField label="대표자명" name="name" required />
-                <FormField label="연락처" name="phone" type="tel" placeholder="010-0000-0000" required onFormat={formatPhone} />
+                <FormField label="기업명" name="company" required onFocus={handleFieldFocus} />
+                <FormField label="사업자번호" name="bizno" placeholder="000-00-00000" required onFormat={formatBizNo} onFocus={handleFieldFocus} />
+                <FormField label="대표자명" name="name" required onFocus={handleFieldFocus} />
+                <FormField label="연락처" name="phone" type="tel" placeholder="010-0000-0000" required onFormat={formatPhone} onFocus={handleFieldFocus} />
               </div>
 
               {/* 연락 정보 - 4열 */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 md:gap-5 mb-3 md:mb-4">
-                <FormField label="이메일" name="email" type="email" required />
-                <SelectField label="업종" name="industry" options={INDUSTRIES} />
-                <FormField label="설립연도" name="founded" placeholder="2020" />
-                <SelectField label="통화 가능 시간" name="consultTime" options={CONSULT_TIMES} required />
+                <FormField label="이메일" name="email" type="email" required onFocus={handleFieldFocus} />
+                <SelectField label="업종" name="industry" options={INDUSTRIES} onFocus={handleFieldFocus} />
+                <FormField label="설립연도" name="founded" placeholder="2020" onFocus={handleFieldFocus} />
+                <SelectField label="통화 가능 시간" name="consultTime" options={CONSULT_TIMES} required onFocus={handleFieldFocus} />
               </div>
 
               {/* 필요 자금 규모 - 1열 */}
               <div className="grid grid-cols-1 gap-2.5 md:gap-5 mb-3 md:mb-4">
-                <SelectField label="필요 자금 규모" name="amount" options={AMOUNTS} />
+                <SelectField label="필요 자금 규모" name="amount" options={AMOUNTS} onFocus={handleFieldFocus} />
               </div>
 
               {/* 자금 종류 선택 */}
@@ -206,6 +238,7 @@ export default function ConsultForm() {
                 <textarea
                   name="message"
                   placeholder="필요하신 자금의 용도나 현재 경영 상황 등을 간략히 적어주세요"
+                  onFocus={() => handleFieldFocus('message')}
                   className="w-full h-[40px] md:h-[60px] px-3 md:px-4 py-2 text-sm md:text-[15px] text-slate-800 placeholder:text-[#8b7a50] border border-slate-200 rounded-lg bg-white/90 resize-y
                     focus:outline-none focus:border-gold focus:ring-[3px] focus:ring-gold/10 transition-all"
                 />
@@ -285,6 +318,7 @@ function FormField({
   placeholder,
   required,
   onFormat,
+  onFocus,
 }: {
   label: string
   name: string
@@ -292,6 +326,7 @@ function FormField({
   placeholder?: string
   required?: boolean
   onFormat?: (value: string) => string
+  onFocus?: (fieldName: string) => void
 }) {
   return (
     <div>
@@ -304,6 +339,7 @@ function FormField({
         placeholder={placeholder}
         required={required}
         onChange={onFormat ? (e) => { e.target.value = onFormat(e.target.value) } : undefined}
+        onFocus={() => onFocus?.(name)}
         className="w-full h-[38px] md:h-[46px] px-3 md:px-4 text-sm md:text-[15px] text-slate-800 placeholder:text-[#8b7a50] border border-slate-200 rounded-lg bg-white/90
           focus:outline-none focus:border-gold focus:ring-[3px] focus:ring-gold/10 transition-all"
       />
@@ -316,11 +352,13 @@ function SelectField({
   name,
   options,
   required,
+  onFocus,
 }: {
   label: string
   name: string
   options: string[]
   required?: boolean
+  onFocus?: (fieldName: string) => void
 }) {
   const [hasValue, setHasValue] = useState(false)
 
@@ -333,6 +371,7 @@ function SelectField({
         name={name}
         required={required}
         onChange={(e) => setHasValue(e.target.value !== '')}
+        onFocus={() => onFocus?.(name)}
         className={`w-full h-[38px] md:h-[46px] px-3 md:px-4 text-sm md:text-[15px] border border-slate-200 rounded-lg bg-white/90
           cursor-pointer appearance-none bg-[length:20px] bg-no-repeat bg-[right_12px_center]
           focus:outline-none focus:border-gold focus:ring-[3px] focus:ring-gold/10 transition-all
