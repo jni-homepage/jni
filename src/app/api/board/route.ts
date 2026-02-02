@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidateTag } from 'next/cache'
 import { deleteR2Image } from '@/lib/r2'
 
 const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN
@@ -62,7 +63,7 @@ export async function GET(request: NextRequest) {
       const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${BOARD_TABLE_ID}/${id}?returnFieldsByFieldId=true`
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}` },
-        next: { revalidate: 60 },
+        next: { tags: ['board'], revalidate: 10 },
       })
       if (!response.ok) {
         if (response.status === 404) return NextResponse.json({ success: false, error: '게시글을 찾을 수 없습니다' }, { status: 404 })
@@ -91,7 +92,7 @@ export async function GET(request: NextRequest) {
     const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${BOARD_TABLE_ID}?${params}`
     const response = await fetch(url, {
       headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}` },
-      next: { revalidate: 60 },
+      next: { tags: ['board'], revalidate: 10 },
     })
     if (!response.ok) throw new Error(`Airtable Error: ${response.status}`)
     const data = await response.json()
@@ -161,6 +162,7 @@ export async function POST(request: NextRequest) {
     }
 
     const record = await response.json()
+    revalidateTag('board')
     return NextResponse.json({ success: true, id: record.id })
   } catch (error) {
     console.error('Board POST Error:', error)
@@ -229,6 +231,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const record = await response.json()
+    revalidateTag('board')
     return NextResponse.json({ success: true, id: record.id })
   } catch (error) {
     console.error('Board PUT Error:', error)
@@ -270,6 +273,7 @@ export async function DELETE(request: NextRequest) {
 
     if (!response.ok) throw new Error(`Airtable Error: ${response.status}`)
 
+    revalidateTag('board')
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Board DELETE Error:', error)
