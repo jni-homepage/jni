@@ -342,22 +342,16 @@ function ServicesSection() {
             {/* 비주얼 (모바일: 상단, 데스크톱: 우측) */}
             <div className="order-1 md:order-2 relative">
               <div className="w-full h-[280px] md:h-[400px] rounded-2xl md:rounded-[20px] relative overflow-hidden
-                bg-gradient-to-br from-navy-light to-navy
                 border border-[rgba(212,175,55,0.3)]
                 shadow-[0_8px_32px_rgba(212,175,55,0.15)]">
+                <img
+                  src="https://pub-0e18ef29fe4a4730aadb9253775bd479.r2.dev/images/mkt-dashboard.webp"
+                  alt="온라인마케팅 통합 대시보드"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
                 {/* 그라데이션 오버레이 */}
                 <div className="absolute inset-0 bg-gradient-to-br from-[rgba(212,175,55,0.15)] to-[rgba(139,111,63,0.15)] rounded-[20px]" />
-                {/* 내부 테두리 */}
-                <div className="absolute top-5 left-5 right-5 bottom-5 border-2 border-[rgba(255,255,255,0.1)] rounded-2xl" />
-                {/* 중앙 아이콘 */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <svg viewBox="0 0 24 24" className="w-16 h-16 md:w-24 md:h-24 fill-gold/30 mx-auto mb-4">
-                      <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" />
-                    </svg>
-                    <p className="text-gold/40 text-sm md:text-base font-medium">통합 마케팅 대시보드</p>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
