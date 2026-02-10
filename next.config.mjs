@@ -27,7 +27,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "frame-ancestors 'self' https://polaai.co.kr https://*.vercel.app",
+            value: "frame-ancestors 'self' https://polaai.co.kr https://www.polaai.co.kr https://*.vercel.app",
           },
           {
             key: 'Referrer-Policy',
