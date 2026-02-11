@@ -6,7 +6,6 @@ import { trackFormVisible, trackFormStart, trackFormSubmit } from '@/lib/gtag'
 const FUND_TYPES = ['창업자금', '운전자금', '시설자금', '기타자금']
 const INDUSTRIES = ['제조업', '도소매업', '서비스업', '건설업', 'IT/소프트웨어', '기타']
 const CONSULT_TIMES = [
-  '오전 09:00 - 10:00',
   '오전 10:00 - 11:00',
   '오전 11:00 - 12:00',
   '오후 14:00 - 15:00',
@@ -168,7 +167,7 @@ export default function ConsultForm() {
                   <p className="text-white text-base">
                     대표전화: <strong className="text-lg">1533-9018</strong>
                   </p>
-                  <p className="text-white text-base">상담시간: 평일 09:00 ~ 18:00</p>
+                  <p className="text-white text-base">상담시간: 평일 10:00 ~ 18:00</p>
                 </div>
               </div>
             </div>

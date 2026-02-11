@@ -62,7 +62,7 @@ export default function Footer() {
                     </>
                   }
                 />
-                <ContactItem icon="time" text="상담시간: 평일 09:00-18:00" />
+                <ContactItem icon="time" text="상담시간: 평일 10:00-18:00" />
               </div>
             </div>
 
