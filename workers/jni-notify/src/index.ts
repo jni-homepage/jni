@@ -22,6 +22,19 @@ interface ConsultData {
   message: string;
 }
 
+interface MetaLeadData {
+  접수일시: string;
+  광고: string;
+  이름: string;
+  연락처: string;
+  사업자종류: string;
+  지역: string;
+  업종: string;
+  상호명: string;
+  직전년도매출: string;
+  회생파산불가안내: string;
+}
+
 // ─── Gmail API (OAuth2 REST) ───
 
 async function refreshAccessToken(env: Env): Promise<string> {
@@ -118,7 +131,7 @@ function buildTelegramMessage(data: ConsultData, now: string): string {
   }
   msg += "\n📅 " + now;
   msg +=
-    '\n\n📊 <a href="https://airtable.com/appxU3n3KqoUr3l9e/tblB7XXuo5DjfSYO9">Airtable에서 보기</a>';
+    '\n\n📊 <a href="https://jnipartners.co.kr/dashboard/leads">접수관리 바로가기</a>';
   return msg;
 }
 
@@ -415,6 +428,168 @@ function buildStaffEmailHtml(data: ConsultData, now: string): string {
 </html>`;
 }
 
+// ─── Meta 리드 텔레그램 메시지 ───
+
+function buildMetaTelegramMessage(data: MetaLeadData): string {
+  let msg = "📢 <b>META 광고 신규 접수</b>\n\n";
+  msg += "👤 <b>고객정보</b>\n";
+  msg += "├ 이름: <b>" + escapeHtml(data.이름) + "</b>\n";
+  msg += "├ 연락처: <code>" + escapeHtml(data.연락처) + "</code>\n";
+  msg += "├ 상호명: " + escapeHtml(data.상호명 || "-") + "\n";
+  msg += "├ 사업자종류: " + escapeHtml(data.사업자종류 || "-") + "\n";
+  msg += "├ 업종: " + escapeHtml(data.업종 || "-") + "\n";
+  msg += "├ 지역: " + escapeHtml(data.지역 || "-") + "\n";
+  msg += "├ 직전년도매출: " + escapeHtml(data.직전년도매출 || "-") + "\n";
+  msg += "└ 회생/파산: " + escapeHtml(data.회생파산불가안내 || "-") + "\n\n";
+  msg += "📣 광고: " + escapeHtml(data.광고 || "-") + "\n";
+  msg +=
+    "📅 " +
+    escapeHtml(
+      data.접수일시 ||
+        new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" }),
+    );
+  msg +=
+    '\n\n📊 <a href="https://jnipartners.co.kr/dashboard/leads">접수관리 바로가기</a>';
+  return msg;
+}
+
+async function sendMetaTelegram(env: Env, data: MetaLeadData) {
+  const res = await fetch(
+    `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: env.TELEGRAM_CHAT_ID,
+        text: buildMetaTelegramMessage(data),
+        parse_mode: "HTML",
+        disable_web_page_preview: true,
+      }),
+    },
+  );
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Telegram send failed: ${res.status} ${err}`);
+  }
+}
+
+// ─── Meta 리드 사내 이메일 HTML ───
+
+function buildMetaStaffEmailHtml(data: MetaLeadData): string {
+  return `<!DOCTYPE html>
+<html lang="ko">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>META 광고 접수 알림</title></head>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f3f4f6;padding:24px 0;">
+  <tr><td align="center">
+    <table width="580" cellpadding="0" cellspacing="0" border="0" style="max-width:580px;width:100%;background:#ffffff;">
+
+      <!-- Header -->
+      <tr>
+        <td style="background:#0f172e;padding:18px 32px;">
+          <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+              <td style="color:#d4af37;font-size:15px;font-weight:300;letter-spacing:5px;text-transform:uppercase;">JNI PARTNERS</td>
+              <td align="right" style="color:rgba(255,255,255,0.5);font-size:10px;letter-spacing:2px;text-transform:uppercase;">Meta Lead Alert</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+      <!-- Notice Banner -->
+      <tr>
+        <td style="background:#eef2ff;border-left:3px solid #6366f1;padding:9px 24px;font-size:12px;color:#3730a3;letter-spacing:0.3px;">
+          META 광고를 통한 새로운 접수입니다 &mdash; ${escapeHtml(data.접수일시 || "")}
+        </td>
+      </tr>
+
+      <!-- Body -->
+      <tr><td style="padding:24px 28px 4px;">
+        <p style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#777;margin:0 0 10px 0;padding-bottom:7px;border-bottom:1px solid #f0f0f0;">Client</p>
+        <table cellpadding="0" cellspacing="0" border="0" style="margin-bottom:18px;">
+          <tr>
+            <td style="font-size:20px;font-weight:400;color:#1a1a1a;letter-spacing:0.5px;padding-right:16px;">${escapeHtml(data.이름)}</td>
+            <td style="font-size:14px;color:#d4af37;font-weight:500;letter-spacing:0.5px;">${escapeHtml(data.연락처)}</td>
+          </tr>
+        </table>
+        <p style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#777;margin:0 0 10px 0;padding-bottom:7px;border-bottom:1px solid #f0f0f0;">기업 정보</p>
+      </td></tr>
+
+      <!-- 기업 정보 Grid -->
+      <tr><td style="padding:0 28px 16px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;border:1px solid #f0f0f0;">
+          <tr>
+            <td width="33%" style="background:#fff;padding:10px 14px;border-right:1px solid #f0f0f0;">
+              <p style="font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#888;margin:0 0 3px 0;">상호명</p>
+              <p style="font-size:13px;color:#1a1a1a;font-weight:600;margin:0;">${escapeHtml(data.상호명 || "-")}</p>
+            </td>
+            <td width="33%" style="background:#fff;padding:10px 14px;border-right:1px solid #f0f0f0;">
+              <p style="font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#888;margin:0 0 3px 0;">사업자종류</p>
+              <p style="font-size:13px;color:#1a1a1a;margin:0;">${escapeHtml(data.사업자종류 || "-")}</p>
+            </td>
+            <td width="34%" style="background:#fff;padding:10px 14px;">
+              <p style="font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#888;margin:0 0 3px 0;">업종</p>
+              <p style="font-size:13px;color:#1a1a1a;margin:0;">${escapeHtml(data.업종 || "-")}</p>
+            </td>
+          </tr>
+        </table>
+      </td></tr>
+
+      <!-- 추가 정보 Grid -->
+      <tr><td style="padding:0 28px 16px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;border:1px solid #f0f0f0;">
+          <tr>
+            <td width="33%" style="background:#fff;padding:10px 14px;border-right:1px solid #f0f0f0;">
+              <p style="font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#888;margin:0 0 3px 0;">지역</p>
+              <p style="font-size:13px;color:#1a1a1a;margin:0;">${escapeHtml(data.지역 || "-")}</p>
+            </td>
+            <td width="33%" style="background:#fff;padding:10px 14px;border-right:1px solid #f0f0f0;">
+              <p style="font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#888;margin:0 0 3px 0;">직전년도매출</p>
+              <p style="font-size:13px;color:#d4af37;font-weight:500;margin:0;">${escapeHtml(data.직전년도매출 || "-")}</p>
+            </td>
+            <td width="34%" style="background:#fff;padding:10px 14px;">
+              <p style="font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#888;margin:0 0 3px 0;">회생/파산</p>
+              <p style="font-size:13px;color:#1a1a1a;margin:0;">${escapeHtml(data.회생파산불가안내 || "-")}</p>
+            </td>
+          </tr>
+        </table>
+      </td></tr>
+
+      <!-- Bottom Row -->
+      <tr><td style="padding:0 28px 20px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#fafafa;padding:10px 14px;">
+          <tr>
+            <td>
+              <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="font-size:9px;letter-spacing:1px;color:#888;text-transform:uppercase;padding-right:6px;">접수</td>
+                  <td style="font-size:12px;color:#6366f1;font-weight:500;padding-right:16px;">META 광고</td>
+                  <td style="font-size:9px;letter-spacing:1px;color:#888;text-transform:uppercase;padding-right:6px;">광고명</td>
+                  <td style="font-size:12px;color:#333;">${escapeHtml(data.광고 || "-")}</td>
+                </tr>
+              </table>
+            </td>
+            <td align="right">
+              <a href="tel:${(data.연락처 || "").replace(/-/g, "")}" style="display:inline-block;background:#0f172e;color:#d4af37;text-decoration:none;padding:8px 18px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-weight:500;">&#128222; 바로 전화</a>
+            </td>
+          </tr>
+        </table>
+      </td></tr>
+
+      <!-- Footer -->
+      <tr>
+        <td style="background:#fafafa;border-top:1px solid #f0f0f0;padding:12px 28px;text-align:center;">
+          <p style="font-size:10px;color:#888;margin:0;line-height:1.6;letter-spacing:0.3px;">제이앤아이 파트너스 자동 알림 &middot; whddlr2006@gmail.com</p>
+        </td>
+      </tr>
+
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>`;
+}
+
 // ─── Worker Entry ───
 
 export default {
@@ -439,6 +614,45 @@ export default {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const url = new URL(request.url);
+    const path = url.pathname;
+
+    // ─── META 리드 접수 ───
+    if (path === "/meta") {
+      const data: MetaLeadData = await request.json();
+
+      const results = await Promise.allSettled([
+        // 1. 텔레그램 알림
+        sendMetaTelegram(env, data),
+        // 2. 사내 알림 이메일
+        sendGmail(
+          env,
+          `${env.GMAIL_USER}, mkt@polarad.co.kr`,
+          `[META접수] ${data.상호명 || data.이름} - ${data.이름}`,
+          buildMetaStaffEmailHtml(data),
+        ),
+      ]);
+
+      const errors = results
+        .map((r, i) =>
+          r.status === "rejected"
+            ? { index: i, reason: String((r as PromiseRejectedResult).reason) }
+            : null,
+        )
+        .filter(Boolean);
+
+      return Response.json({
+        success: errors.length === 0,
+        source: "meta",
+        sent: {
+          telegram: results[0].status === "fulfilled",
+          staffEmail: results[1].status === "fulfilled",
+        },
+        errors: errors.length > 0 ? errors : undefined,
+      });
+    }
+
+    // ─── 홈페이지 상담 접수 (기존) ───
     const data: ConsultData = await request.json();
     const now = new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" });
 
