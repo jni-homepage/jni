@@ -3,7 +3,7 @@ import Airtable from "airtable";
 
 const AIRTABLE_BASE_ID = "appxU3n3KqoUr3l9e";
 const AIRTABLE_TABLE = "고객접수";
-const META_TABLE = "META접수";
+const META_TABLE = "tbl7hadkFGFGzkc0x";
 
 function getBase() {
   const token = process.env.AIRTABLE_TOKEN;
@@ -92,9 +92,9 @@ export async function GET(request: NextRequest) {
                   업종: record.get("업종") || "",
                   설립연도: "",
                   통화가능시간: "",
-                  자금규모: record.get("직전년도매출") || "",
+                  자금규모: record.get("직전년도 매출") || "",
                   자금종류: "",
-                  문의사항: record.get("회생파산불가안내") || "",
+                  문의사항: record.get("회생 파산 불가안내") || "",
                   접수일시: record.get("접수일시") || "",
                   상태: record.get("상태") || "신규",
                   메모: record.get("메모") || "",
