@@ -93,8 +93,8 @@ export default function LegalModal({ isOpen, onClose, title, lastUpdated, sectio
             <div className="text-[12px] md:text-[13px] text-slate-400 space-y-1">
               <p className="font-semibold text-slate-500">제이앤아이 파트너스</p>
               <p>대표자: 김종익 | 사업자등록번호: 105-35-13025</p>
-              <p>주소: 서울특별시 구로구 고척로 19길 69-3, 303호(개봉동)</p>
-              <p>대표전화: 1533-9018 | 이메일: whddlr2006@gmail.com</p>
+              <p>주소: 경기도 광명시 일직로43, GIDC B동 20층 2010호</p>
+              <p>대표전화: 1533-9018 | 이메일: jeinico26@gmail.com</p>
             </div>
           </div>
         </div>

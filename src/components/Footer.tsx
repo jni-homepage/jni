@@ -51,14 +51,14 @@ export default function Footer() {
                 <ContactItem icon="person" text="대표자: 김종익" />
                 <ContactItem icon="business" text="사업자등록번호: 105-35-13025" />
                 <ContactItem icon="phone" text="대표전화: 1533-9018" />
-                <ContactItem icon="email" text="이메일: whddlr2006@gmail.com" />
+                <ContactItem icon="email" text="이메일: jeinico26@gmail.com" />
                 <ContactItem
                   icon="location"
                   text={
                     <>
-                      주소: 서울특별시 구로구 고척로
+                      주소: 경기도 광명시 일직로43,
                       <br className="md:hidden" />
-                      19길 69-3, 303호(개봉동)
+                      GIDC B동 20층 2010호
                     </>
                   }
                 />

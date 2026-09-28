@@ -1,76 +1,83 @@
-'use client'
+"use client";
 
-import { useEffect, useRef } from 'react'
-import CountUpNumber from '@/components/CountUpNumber'
+import { useEffect, useRef } from "react";
+import CountUpNumber from "@/components/CountUpNumber";
 
 const STEPS = [
   {
-    num: '01',
-    title: '역량 분석',
-    desc: '대표자 역량과 자금조달 방향\n체계적 분석 및 전략 설계',
+    num: "01",
+    title: "역량 분석",
+    desc: "대표자 역량과 자금조달 방향\n체계적 분석 및 전략 설계",
     icon: (
       <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z" />
     ),
   },
   {
-    num: '02',
-    title: '조달 전략',
-    desc: '정책자금·기업대출·보증서 등\n최적 자금조달 전략 수립',
+    num: "02",
+    title: "조달 전략",
+    desc: "정책자금·기업대출·보증서 등\n최적 자금조달 전략 수립",
     icon: (
       <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
     ),
   },
   {
-    num: '03',
-    title: '성공 지원',
-    desc: '정책자금 신청부터 심사통과까지\n전문 컨설턴트 전담 지원',
+    num: "03",
+    title: "성공 지원",
+    desc: "정책자금 신청부터 심사통과까지\n전문 컨설턴트 전담 지원",
     icon: <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />,
   },
-]
+];
 
 export default function ProcessSection() {
-  const gridRef = useRef<HTMLDivElement>(null)
+  const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (typeof window === 'undefined' || window.innerWidth <= 768) return
+    if (typeof window === "undefined" || window.innerWidth <= 768) return;
 
-    const cards = gridRef.current?.querySelectorAll<HTMLElement>('.process-card')
-    if (!cards) return
+    const cards =
+      gridRef.current?.querySelectorAll<HTMLElement>(".process-card");
+    if (!cards) return;
 
     const handlers = Array.from(cards).map((card) => {
       const onMove = (e: MouseEvent) => {
-        const rect = card.getBoundingClientRect()
-        card.style.setProperty('--mx', `${e.clientX - rect.left}px`)
-        card.style.setProperty('--my', `${e.clientY - rect.top}px`)
-      }
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+        card.style.setProperty("--my", `${e.clientY - rect.top}px`);
+      };
       const onLeave = () => {
-        card.style.setProperty('--mx', '50%')
-        card.style.setProperty('--my', '50%')
-      }
-      card.addEventListener('mousemove', onMove)
-      card.addEventListener('mouseleave', onLeave)
-      return { card, onMove, onLeave }
-    })
+        card.style.setProperty("--mx", "50%");
+        card.style.setProperty("--my", "50%");
+      };
+      card.addEventListener("mousemove", onMove);
+      card.addEventListener("mouseleave", onLeave);
+      return { card, onMove, onLeave };
+    });
 
     return () => {
       handlers.forEach(({ card, onMove, onLeave }) => {
-        card.removeEventListener('mousemove', onMove)
-        card.removeEventListener('mouseleave', onLeave)
-      })
-    }
-  }, [])
+        card.removeEventListener("mousemove", onMove);
+        card.removeEventListener("mouseleave", onLeave);
+      });
+    };
+  }, []);
 
   return (
     <section
       className="relative w-full py-12 md:py-16 lg:py-20 px-4 md:px-8 lg:px-10 overflow-hidden"
-      style={{ background: 'linear-gradient(180deg, #0f172e 0%, #1a2547 50%, #0f172e 100%)' }}
+      style={{
+        background:
+          "linear-gradient(180deg, #0f172e 0%, #1a2547 50%, #0f172e 100%)",
+      }}
     >
       <div className="relative z-[1] max-w-wide mx-auto">
         {/* 섹션 헤더 */}
         <div className="text-center mb-7 md:mb-14 animate-fade-up">
           <h2 className="text-[26px] md:text-[44px] font-black text-light mb-2.5 uppercase tracking-wider leading-snug">
-            정책자금 자금조달의<br />
-            <span className="text-gold animate-[neonGlowPulse_3s_ease-in-out_infinite]">체계적 3단계 프로세스</span>
+            정책자금 자금조달의
+            <br />
+            <span className="text-gold animate-[neonGlowPulse_3s_ease-in-out_infinite]">
+              체계적 3단계 프로세스
+            </span>
           </h2>
           <p className="text-sm md:text-xl text-body/90 font-medium tracking-wide leading-relaxed">
             정책자금 조달부터 기업 성장 전략까지 경영컨설팅 전문가와 함께
@@ -118,7 +125,11 @@ export default function ProcessSection() {
                       bg-gradient-to-br from-[rgba(30,60,120,0.3)] to-gold/20
                       border-2 border-gold/40 text-gold md:mb-4"
                   >
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 md:w-9 md:h-9 lg:w-10 lg:h-10">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="w-5 h-5 md:w-9 md:h-9 lg:w-10 lg:h-10"
+                    >
                       {step.icon}
                     </svg>
                   </div>
@@ -157,7 +168,11 @@ export default function ProcessSection() {
               gold-gradient-bg rounded-full flex items-center justify-center
               shadow-[0_0_20px_rgba(212,175,55,0.6)]"
           >
-            <svg viewBox="0 0 24 24" fill="#0f172e" className="w-5 h-5 md:w-6 md:h-6">
+            <svg
+              viewBox="0 0 24 24"
+              fill="#0f172e"
+              className="w-5 h-5 md:w-6 md:h-6"
+            >
               <path d="M12 2c5.5 0 10 4.5 10 10s-4.5 10-10 10S2 17.5 2 12 6.5 2 12 2zm0 2c-4.4 0-8 3.6-8 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm-1 13l-3.5-3.5 1.4-1.4L11 14.2l4.1-4.1 1.4 1.4L11 17z" />
             </svg>
           </div>
@@ -167,8 +182,14 @@ export default function ProcessSection() {
               성공적인 정책자금 확보를 현실로!
             </h3>
             <p className="text-sm md:text-lg lg:text-xl text-body/90 font-semibold">
-              자금조달 성공 기업 <span className="text-gold font-black text-gold-glow"><CountUpNumber end={418} suffix="+" /></span> / 심사통과율{' '}
-              <span className="text-gold font-black text-gold-glow"><CountUpNumber end={96} suffix="%" /></span>
+              자금조달 성공 기업{" "}
+              <span className="text-gold font-black text-gold-glow">
+                <CountUpNumber end={418} suffix="+" />
+              </span>{" "}
+              / 심사통과율{" "}
+              <span className="text-gold font-black text-gold-glow">
+                <CountUpNumber end={97} suffix="%" />
+              </span>
             </p>
             <p className="text-[11px] md:text-xs lg:text-[13px] text-body/70 mt-1">
               *기업 규모와 업종에 따라 결과 및 기간은 차이가 있을 수 있습니다.
@@ -177,5 +198,5 @@ export default function ProcessSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }
