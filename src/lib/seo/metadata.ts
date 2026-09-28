@@ -10,7 +10,7 @@ export const baseMetadata: Metadata = {
   creator: SITE_NAME,
   publisher: SITE_NAME,
   formatDetection: { telephone: true, email: true },
-  robots: { index: true, follow: true },
+  robots: { index: false, follow: true },
 };
 
 export const pageMetadata: Record<string, Metadata> = {

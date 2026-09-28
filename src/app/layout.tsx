@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "",
     other: {
       "naver-site-verification": [
-        process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION || "",
+        "6c693f131cb24b5a27276b4d504cafcc460ad290",
       ],
     },
   },
